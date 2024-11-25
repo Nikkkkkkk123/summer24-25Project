@@ -19,7 +19,7 @@ screen = pygame.display.set_mode((800, 600))
 
 # 'pygame.display.flip()' updates the display
 
-# Create a player object
+# Create a player object. Player(characterused, screenWidth, screenHeight)
 player = Player('player.png', 800, 750) # Currently hardcoded
 
 # Boolean variable to control the main loop
@@ -36,6 +36,10 @@ while running:
         player.move('left')
     if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
         player.move('right')
+    if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+        player.move('down')
+    if keys[pygame.K_UP] or keys[pygame.K_w]:
+        player.move('up')
 
     # Using Blit you can draw the background image on the screen
     screen.blit(background, (0, 0))
