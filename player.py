@@ -10,16 +10,15 @@ class Player:
     # Constructor
     def __init__(self, sprite, screenWidth, screenHeight):
         # All values are subject to change
-        self.size = 50
         self.speed = 0.5
 
         # Define the size of the frame
-        frameWidth = 128
-        frameHeight = 128
+        self.frameWidth = 128
+        self.frameHeight = 128
 
         # Position of the player to be centre of the screen
-        self.x = (screenWidth - self.size) // 2
-        self.y = (screenHeight - self.size) // 2
+        self.x = (screenWidth - self.frameWidth) // 2
+        self.y = (screenHeight - self.frameHeight) // 2
 
         # Direction of the player
         self.direction = 'right'
@@ -28,20 +27,23 @@ class Player:
         self.sprite_sheet = pygame.image.load('MaleSwordsMan/Walk.png')
 
         # Animation Speed
-        self.animation_speed = 1.3
+        self.animation_speed = 5
         self.animation_count = 0 # Counter for the animation. This will be used to change the image of the player
         sprite_sheet_width, sprite_sheet_height = self.sprite_sheet.get_size()
-        self.num_frames = sprite_sheet_width // frameWidth
+        self.num_frames = sprite_sheet_width // self.frameWidth
 
         self.frames = []
         for i in range(self.num_frames):
-            frame = self.sprite_sheet.subsurface((i * frameWidth, 0, frameWidth, frameHeight))
+            # Get the frame from the sprite sheet
+            # subsurface((x, y, width, height))
+            frame = self.sprite_sheet.subsurface((i * self.frameWidth, 0, 75, self.frameHeight))
             self.frames.append(frame)
 
         # Set the initial image of the player walking sprite
         self.image_index = 0
 
         self.image = self.frames[self.image_index]
+        
 
 
     # Since this is a 2D game, The player can only move along the x-axis
@@ -56,8 +58,9 @@ class Player:
             
             # Move the player
             # If the player is at the edge of the screen, do not move
-            if self.x - self.speed > 0:
+            if  self.x - self.speed > 0:
                 self.x -= self.speed
+            
         elif direction == 'right':
             if self.direction != 'right':
                 # Change the image of the player. This will be used to animate the player
@@ -67,14 +70,14 @@ class Player:
             
             # Move the player
             # Check if they are at the edge of the screen to avoid the character going off screen
-            if self.x + self.speed < 800 - self.size:
+            if self.x + self.speed < 726:
                 self.x += self.speed
 
         elif direction == 'down':
-            if self.y + self.speed < 600 - self.size:
+            if self.y + self.speed < 600 - self.frameHeight:
                 self.y += self.speed
         elif direction == 'up':
-            if self.y - self.speed > 340:
+            if self.y - self.speed > 261:
                 self.y -= self.speed
 
         # Update the animation frame
