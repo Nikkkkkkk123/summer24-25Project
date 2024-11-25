@@ -23,7 +23,7 @@ class Player:
         # Direction of the player
         self.direction = 'right'
 
-        # Load the sprite sheet
+        # Load the sprite sheet (Currently hard coded to the walk animation)
         self.sprite_sheet = pygame.image.load('MaleSwordsMan/Walk.png')
 
         # Animation Speed
@@ -32,6 +32,7 @@ class Player:
         sprite_sheet_width, sprite_sheet_height = self.sprite_sheet.get_size()
         self.num_frames = sprite_sheet_width // self.frameWidth
 
+        # This is currently loading the walk animation
         self.frames = []
         for i in range(self.num_frames):
             # Get the frame from the sprite sheet
