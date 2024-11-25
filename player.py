@@ -25,29 +25,26 @@ class Player:
         # Direction of the player
         self.direction = 'right'
 
-        # Load the sprite sheet (Currently hard coded to the walk animation)
-        self.sprite_sheet = pygame.image.load('MaleSwordsMan/Walk.png')
-
         # Animation Speed
         self.animation_speed = 5
         self.animation_count = 0 # Counter for the animation. This will be used to change the image of the player
-        sprite_sheet_width, sprite_sheet_height = self.sprite_sheet.get_size()
-        self.num_frames = sprite_sheet_width // self.frameWidth
+        self.walking_animation_count = 0 # Counter for the walking animation
 
-        # This is currently loading the walk animation
-        self.frames = []
-        for i in range(self.num_frames):
-            # Get the frame from the sprite sheet
-            # subsurface((x, y, width, height))
-            frame = self.sprite_sheet.subsurface((i * self.frameWidth, 0, 75, self.frameHeight))
-            self.frames.append(frame)
-
-        # Set the initial image of the player walking sprite
-        self.image_index = 0
-
-        self.image = self.frames[self.image_index]
+        # Load the walking sprite
+        self.loadWalkingSprite()
         
+    def loadWalkingSprite(self):
+        self.walkingSprite = pygame.image.load('MaleSwordsMan/Walk.png')
+        walkingSpriteWidth, walkingSpriteHeight = self.walkingSprite.get_size()
+        self.numWalkingFrames = walkingSpriteWidth // self.frameWidth
 
+        self.walkingFrames = []
+        for i in range(self.numWalkingFrames):
+            walkingFrame = self.walkingSprite.subsurface((i * self.frameWidth, 0, 128, self.frameHeight))
+            self.walkingFrames.append(walkingFrame)
+
+        self.walkingIndex = 0
+        self.image = self.walkingFrames[self.walkingIndex]
 
     # Since this is a 2D game, The player can only move along the x-axis
     def move(self, direction):
@@ -56,7 +53,7 @@ class Player:
             if self.direction != 'left':
                 # Change the image of the player. This will be used to animate the player
                 # pygame.transform.flip(image, x-axis, y-axis)
-                self.frames = [pygame.transform.flip(frame, True, False) for frame in self.frames]
+                self.walkingFrames = [pygame.transform.flip(frame, True, False) for frame in self.walkingFrames]
                 self.direction = 'left'
             
             # Move the player
@@ -68,7 +65,7 @@ class Player:
             if self.direction != 'right':
                 # Change the image of the player. This will be used to animate the player
                 # pygame.transform.flip(image, x-axis, y-axis)
-                self.frames = [pygame.transform.flip(frame, True, False) for frame in self.frames]
+                self.walkingFrames = [pygame.transform.flip(frame, True, False) for frame in self.walkingFrames]
                 self.direction = 'right'
             
             # Move the player
@@ -84,11 +81,11 @@ class Player:
                 self.y -= self.speed
 
         # Update the animation frame
-        self.animation_count += 1
-        if self.animation_count >= self.animation_speed:
-            self.animation_count = 0
-            self.image_index = (self.image_index + 1) % self.num_frames
-            self.image = self.frames[self.image_index]
+        self.walking_animation_count += 1
+        if self.walking_animation_count >= self.animation_speed:
+            self.walking_animation_count = 0
+            self.walkingIndex = (self.walkingIndex + 1) % self.numWalkingFrames
+            self.image = self.walkingFrames[self.walkingIndex]
     
     # Draw the player on the screen
     def draw (self, screen):
