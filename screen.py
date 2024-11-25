@@ -4,6 +4,9 @@ from player import Player
 # Initialize the pygame
 pygame.init()
 
+# Initialise the font module
+font = pygame.font.Font(None, 28)
+
 # Set the window title
 pygame.display.set_caption('Zombie Apocalypse')
 
@@ -20,7 +23,7 @@ screen = pygame.display.set_mode((800, 600))
 # 'pygame.display.flip()' updates the display
 
 # Create a player object. Player(characterused, screenWidth, screenHeight)
-player = Player('player.png', 800, 750) # Currently hardcoded
+player = Player('MaleSwordsMan', 800, 750) # Currently hardcoded
 
 # Boolean variable to control the main loop
 running = True
@@ -46,6 +49,10 @@ while running:
 
     # Create a player object
     player.draw(screen)
+
+    # Display the player health
+    text = font.render(f'Health: {player.health}', True, (255, 255, 255))
+    screen.blit(text, (0, 0))
 
     pygame.display.flip()
 

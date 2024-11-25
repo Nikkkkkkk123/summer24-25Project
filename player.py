@@ -6,11 +6,13 @@ class Player:
     # Position of the player
     # Image of the player (IDK how this will look atm)
     # Direction of the player avatar
+    # Player Health (26/11/2024)
 
     # Constructor
     def __init__(self, sprite, screenWidth, screenHeight):
         # All values are subject to change
         self.speed = 0.5
+        self.health = 100
 
         # Define the size of the frame
         self.frameWidth = 128
@@ -91,3 +93,6 @@ class Player:
     # Draw the player on the screen
     def draw (self, screen):
         screen.blit(self.image, (self.x, self.y))
+
+    def get_health(self):
+        return self.health
