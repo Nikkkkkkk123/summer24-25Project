@@ -93,6 +93,3 @@ class Player:
     # Draw the player on the screen
     def draw (self, screen):
         screen.blit(self.image, (self.x, self.y))
-
-    def get_health(self):
-        return self.health
