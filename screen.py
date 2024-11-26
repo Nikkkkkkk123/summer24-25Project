@@ -32,6 +32,9 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        # Add input for left mouse button click. This allows the user to attack
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            player.attack()
     
     # Check which key is being pressed
     keys = pygame.key.get_pressed()
