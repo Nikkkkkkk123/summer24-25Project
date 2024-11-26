@@ -1,8 +1,9 @@
 import pygame
 
 class Player:
+
     # Size of the player
-    # Speed of the player
+    # Speed of the player(adjusted to 2 for now)
     # Position of the player
     # Image of the player (IDK how this will look atm)
     # Direction of the player avatar
@@ -11,7 +12,7 @@ class Player:
     # Constructor
     def __init__(self, sprite, screenWidth, screenHeight):
         # All values are subject to change
-        self.speed = 0.5
+        self.speed = 2
         self.health = 100
 
         # Define the size of the frame
@@ -26,7 +27,7 @@ class Player:
         self.direction = 'right'
 
         # Animation Walking animations
-        self.animation_speed = 5
+        self.animation_speed = 1
         self.animation_count = 0 # Counter for the animation. This will be used to change the image of the player
         self.walking_animation_count = 0 # Counter for the walking animation
 
@@ -39,6 +40,27 @@ class Player:
         self.isAttacking = False # Boolean to check if the player is attacking. This allows for the player to be drawn to the screen. 
         self.attack_animation_count = 0 # Counter for the attack animation
         self.attackDirection = 'right' # Used to know if the sprite has to be flipped from the original orientation. This is caused from the user moving left and right
+
+        # Load the running sprite
+        self.runSprite()
+        self.run_animation_speed = 1
+        self.run_animation_count = 0 # Counter for the running animation
+        self.isRunning = False # Boolean to check if the player is running.
+
+        # Load the jumping sprite
+        self.jumpSprite()
+        self.jump_animation_speed = 1
+        self.jump_animation_count = 0 # Counter for the jumping animation
+        self.isJumping = False # Boolean to check if the player is jumping. 
+
+        # Load the hurt sprite
+        self.hurtSprite()
+        self.hurt_animation_count = 0 # Counter for the hurt animation
+        self.isHurt = False # Boolean to check if the player is hurt.
+
+        # Screen dimensions
+        self.screenWidth = screenWidth
+        self.screenHeight = screenHeight
         
     def loadWalkingSprite(self):
         # Loads the walking sprite from the png
@@ -55,6 +77,19 @@ class Player:
         self.walkingIndex = 0
         self.image = self.walkingFrames[self.walkingIndex]
     
+    #Sprite running animation
+    def runSprite(self):
+        self.run_sprite = pygame.image.load('MaleSwordsMan/Run.png')
+        runSpriteWidth, runSpriteHeight = self.run_sprite.get_size()
+        self.numRunFrames = runSpriteWidth // self.frameWidth
+        self.runFrames = []
+        for i in range(self.numRunFrames):
+            runFrame = self.run_sprite.subsurface((i * self.frameWidth, 0, 128, self.frameHeight))
+            self.runFrames.append(runFrame)
+        
+        self.runIndex = 0
+        self.run_image = self.runFrames[self.runIndex]
+
     # Method to allow for the user to attack
     def loadAttackingSprite(self):
         self.attack_sprite = pygame.image.load('MaleSwordsMan/Attack_1.png')
@@ -68,38 +103,63 @@ class Player:
         self.attackIndex = 0
         self.attack_image = self.attackFrames[self.attackIndex]
 
+    #Sprite jumping animation
+    def jumpSprite(self):
+        self.jump_sprite = pygame.image.load('MaleSwordsMan/Jump.png')
+        jumpSpriteWidth, jumpSpriteHeight = self.jump_sprite.get_size()
+        self.numJumpFrames = jumpSpriteWidth // self.frameWidth
+        self.jumpFrames = []
+        for i in range(self.numJumpFrames):
+            jumpFrame = self.jump_sprite.subsurface((i * self.frameWidth, 0, 128, self.frameHeight))
+            self.jumpFrames.append(jumpFrame)
+        
+        self.jumpIndex = 0
+        self.jump_image = self.jumpFrames[self.jumpIndex]
+
+    def hurtSprite(self):
+        self.hurt_sprite = pygame.image.load('MaleSwordsMan/Hurt.png')
+        hurtSpriteWidth, hurtSpriteHeight = self.hurt_sprite.get_size()
+        self.numHurtFrames = hurtSpriteWidth // self.frameWidth
+        self.hurtFrames = []
+        for i in range(self.numHurtFrames):
+            hurtFrame = self.hurt_sprite.subsurface((i * self.frameWidth, 0, 128, self.frameHeight))
+            self.hurtFrames.append(hurtFrame)
+        
+        self.hurtIndex = 0
+        self.hurt_image = self.hurtFrames[self.hurtIndex]
+    
     # Since this is a 2D game, The player can only move along the x-axis
     def move(self, direction):
         if direction == 'left':
             # Check the player direction, if it is not the same as the direction we want to move, flip the image
             if self.direction != 'left':
                 # Change the image of the player. This will be used to animate the player
-                # pygame.transform.flip(image, x-axis, y-axis)
                 self.walkingFrames = [pygame.transform.flip(frame, True, False) for frame in self.walkingFrames]
+                self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
+                self.jumpFrames = [pygame.transform.flip(frame, True, False) for frame in self.jumpFrames]
                 self.direction = 'left'
             
             # Move the player
-            # If the player is at the edge of the screen, do not move
-            if  self.x - self.speed > 0:
+            if self.x - self.speed > 0:
                 self.x -= self.speed
             
         elif direction == 'right':
             if self.direction != 'right':
                 # Change the image of the player. This will be used to animate the player
-                # pygame.transform.flip(image, x-axis, y-axis)
                 self.walkingFrames = [pygame.transform.flip(frame, True, False) for frame in self.walkingFrames]
+                self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
+                self.jumpFrames = [pygame.transform.flip(frame, True, False) for frame in self.jumpFrames]
                 self.direction = 'right'
             
             # Move the player
-            # Check if they are at the edge of the screen to avoid the character going off screen
-            if self.x + self.speed < 726:
+            if self.x + self.speed < self.screenWidth - self.frameWidth:
                 self.x += self.speed
 
         elif direction == 'down':
-            if self.y + self.speed < 600 - self.frameHeight:
+            if self.y + self.speed < self.screenHeight - self.frameHeight:
                 self.y += self.speed
         elif direction == 'up':
-            if self.y - self.speed > 261:
+            if self.y - self.speed > 0:
                 self.y -= self.speed
 
         # Update the animation frame
@@ -109,13 +169,54 @@ class Player:
             self.walkingIndex = (self.walkingIndex + 1) % self.numWalkingFrames
             self.image = self.walkingFrames[self.walkingIndex]
     
+    #Sprite running
+    def run(self,direction):
+        self.isRunning = True
+        if direction == 'left':
+            if self.direction != 'left':
+                self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
+                self.direction = 'left'
+            if self.x - self.speed > 0:
+                self.x -= self.speed
+        elif direction == 'right':
+            if self.direction != 'right':
+                self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
+                self.direction = 'right'
+            if self.x + self.speed < self.screenWidth - self.frameWidth:
+                self.x += self.speed
+        elif direction == 'down':
+            if self.y + self.speed < self.screenHeight - self.frameHeight:
+                self.y += self.speed
+        elif direction == 'up':
+            if self.y - self.speed > 0:
+                self.y -= self.speed
+        
+        self.run_animation_count += 1
+        if self.run_animation_count >= self.run_animation_speed:
+            self.run_animation_count = 0
+            self.runIndex = (self.runIndex + 1) % self.numRunFrames
+            self.run_image = self.runFrames[self.runIndex]
+
     # Method for attacking
     def attack(self):
         self.isAttacking = True # Set the boolean to true. This allows the program to know that the player is attacking
         self.attack_animation_count = 0
         self.attackIndex = 0
 
-    # Draw the player on the screen
+    # Method to check if the player has been hit
+    def hurt(self):
+        self.hurt_animation_count = 0
+        self.hurtIndex = 0
+
+    #Method for jumping
+    def jump(self):
+        self.jump_animation_count += 1
+        if self.jump_animation_count >= self.jump_animation_speed:
+            self.jump_animation_count = 0
+            self.jumpIndex = (self.jumpIndex + 1) % self.numJumpFrames
+            self.jump_image = self.jumpFrames[self.jumpIndex]
+
+   # Draw the player on the screen
     def draw (self, screen):
         # Check the boolean to see if the attacking animation is meant to be getting used
         if self.isAttacking:
@@ -142,6 +243,30 @@ class Player:
                     self.image = self.walkingFrames[self.walkingIndex]
                     screen.blit(self.image, (self.x, self.y))
                     
-                
+        elif self.isJumping:
+            self.jump_animation_count += 1
+            if self.jump_animation_count >= self.jump_animation_speed:
+                self.jumpIndex = (self.jumpIndex + 1) % self.numJumpFrames
+                self.image = self.jumpFrames[self.jumpIndex]
+                screen.blit(self.image, (self.x, self.y))
+                pygame.time.delay(35)
+
+                # If the player has reached the end of the jumping animation, reset the animation
+                if self.jumpIndex == self.numJumpFrames - 1:
+                    self.jump_animation_count = 0
+                    self.isJumping = False
+                    self.walkingIndex = 0
+                    self.walking_animation_count = 0
+                    self.image = self.walkingFrames[self.walkingIndex]
+                    screen.blit(self.image, (self.x, self.y))
+
+        elif self.isRunning:
+            self.run_animation_count += 1
+            if self.run_animation_count >= self.run_animation_speed:
+                self.runIndex = (self.runIndex + 1) % self.numRunFrames
+                self.image = self.runFrames[self.runIndex]
+                screen.blit(self.image, (self.x, self.y))
+                pygame.time.delay(20)
+
         else:
             screen.blit(self.image, (self.x, self.y))
