@@ -105,11 +105,10 @@ while running:
                 # Swap the menu boolean to indicate if the menu is in use or not
                 menu_active = not menu_active
 
-                # Check if the menu has now been activated. If yes than draw the menu. else set the boxes to None
-                if menu_active:
-                    menu_click_box, char_select_click_box, settings_click_box, close_click_box = draw_menu(screen)
-                else:
+                # If the menu has been deactivated, reset the click boxes
+                if not menu_active:
                     menu_click_box, char_select_click_box, settings_click_box, close_click_box = None, None, None, None
+                    
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if menu_active:
                 # Obtain the position of the mouse cursor
@@ -121,16 +120,6 @@ while running:
                     running = False
             else:
                 player.attack()
-
-    # If no button is clicked and in the menu check if the mouse is hovering over a button.
-    # If it is than change the cursor to a pointer, otherwise if the curser is not the default cursor
-    # and is not hovering a button than change it back to the default cursor.
-    if menu_active:
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        if any(box.collidepoint(mouse_x - (screen_width // 2 - 100), mouse_y - (screen_height // 2 - 100)) for box in [menu_click_box, char_select_click_box, settings_click_box, close_click_box]):
-            pygame.mouse.set_cursor(pointer_cursor)
-        elif pygame.mouse.get_cursor() != default_cursor:
-            pygame.mouse.set_cursor(default_cursor)
 
     if not menu_active:
         keys = pygame.key.get_pressed()
@@ -159,6 +148,16 @@ while running:
         screen.blit(text, (0, 0))
     else:
         menu_click_box, char_select_click_box,settings_click_box, close_click_box = draw_menu(screen)
+
+    # If no button is clicked and in the menu check if the mouse is hovering over a button.
+    # If it is than change the cursor to a pointer, otherwise if the curser is not the default cursor
+    # and is not hovering a button than change it back to the default cursor.
+    if menu_active:
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        if any(box.collidepoint(mouse_x - (screen_width // 2 - 100), mouse_y - (screen_height // 2 - 100)) for box in [menu_click_box, char_select_click_box, settings_click_box, close_click_box]):
+            pygame.mouse.set_cursor(pointer_cursor)
+        elif pygame.mouse.get_cursor() != default_cursor:
+            pygame.mouse.set_cursor(default_cursor)
 
     pygame.display.flip()
 
