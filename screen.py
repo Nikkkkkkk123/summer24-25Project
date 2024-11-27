@@ -4,6 +4,10 @@ from player import Player
 # Initialize the pygame
 pygame.init()
 
+# Define the cursors
+default_cursor = pygame.cursors.arrow
+pointer_cursor = pygame.SYSTEM_CURSOR_HAND
+
 # Initialise the font module
 font = pygame.font.Font(None, 28)
 
@@ -59,7 +63,7 @@ def draw_menu(screen):
     settings_text = menu_font.render('Settings', True, hex_to_rgb('#ad0202'))
     close_text = menu_font.render('Close Game', True, hex_to_rgb('#ad0202'))
     
-    # Button positions
+    # Button positions get_rect(center=(x, y))
     menu_text_rect = menu_text.get_rect(center=(menu_width // 2, 50))
     char_select_rect = char_select.get_rect(center=(menu_width // 2, 100))
     settings_text_rect = settings_text.get_rect(center=(menu_width // 2, 150))
@@ -79,13 +83,13 @@ def draw_menu(screen):
     menu_surface.blit(close_text, close_text_rect)
     
     # Blit the menu surface onto the screen
-    screen.blit(menu_surface, (screen_width // 2 - menu_width // 2, screen_height // 2 - menu_height // 2))
+    screen.blit(menu_surface, (screen_width // 2 - 100, screen_height // 2 - 100))
     
     # Inflate the rectangles for larger click areas
-    menu_click_box = menu_text_rect.inflate(30, 20)
-    char_select_click_box = char_select_rect.inflate(30, 20)
-    setting_click_box = settings_text_rect.inflate(30, 20)
-    close_click_box = close_text_rect.inflate(30, 20)
+    menu_click_box = menu_text_rect.inflate(15, 5)
+    char_select_click_box = char_select_rect.inflate(15, 5)
+    setting_click_box = settings_text_rect.inflate(15, 5)
+    close_click_box = close_text_rect.inflate(15, 5)
 
     return menu_click_box, char_select_click_box,setting_click_box, close_click_box
 
@@ -98,15 +102,26 @@ while running:
                 menu_active = not menu_active
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if menu_active:
-                mouse_x, mouse_y = event.pos
-                menu_click_box, settings_click_box, close_click_box = draw_menu(screen)
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                menu_click_box, char_select_click_box, settings_click_box, close_click_box = draw_menu(screen)
                 if settings_click_box.collidepoint(mouse_x - (screen_width // 2 - 100), mouse_y - (screen_height // 2 - 100)):
                     print("Settings button clicked")
                 elif close_click_box.collidepoint(mouse_x - (screen_width // 2 - 100), mouse_y - (screen_height // 2 - 100)):
                     running = False
             else:
                 player.attack()
-    
+
+    # If no button is clicked and in the menu check if the mouse is hovering over a button.
+    # If it is than change the cursor to a pointer, otherwise if the curser is not the default cursor
+    # and is not hovering a button than change it back to the default cursor.
+    if menu_active:
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        menu_click_box, char_select_click_box, settings_click_box, close_click_box = draw_menu(screen)
+        if any(box.collidepoint(mouse_x - (screen_width // 2 - 100), mouse_y - (screen_height // 2 - 100)) for box in [menu_click_box, char_select_click_box, settings_click_box, close_click_box]):
+            pygame.mouse.set_cursor(pointer_cursor)
+        elif pygame.mouse.get_cursor() != default_cursor:
+            pygame.mouse.set_cursor(default_cursor)
+
     if not menu_active:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
