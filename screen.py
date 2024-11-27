@@ -84,6 +84,9 @@ def draw_menu(screen):
     return menu_click_box, setting_click_box, close_click_box
 
 while running:
+    # GAME CLOCK 
+    game_time = pygame.time.get_ticks() / 1000
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -105,20 +108,20 @@ while running:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             if keys[pygame.K_LSHIFT]:
-                player.run('left')
+                player.run('left', game_time)
             else:
                 player.isRunning = False
-                player.move('left')
+                player.move('left',game_time)
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             if keys[pygame.K_LSHIFT]:
-                player.run('right')
+                player.run('right',game_time)
             else:
                 player.isRunning = False
-                player.move('right')
+                player.move('right',game_time)
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            player.move('down')
+            player.move('down',game_time)
         if keys[pygame.K_UP] or keys[pygame.K_w]:
-            player.move('up')
+            player.move('up',game_time)
         if keys[pygame.K_SPACE]:
             player.isRunning = False
             player.jump()
