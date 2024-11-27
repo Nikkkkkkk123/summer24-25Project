@@ -44,7 +44,7 @@ def draw_rounded_corners(surface, color, rect, radius):
 
 def draw_menu(screen):
     # Size of the menu
-    menu_width, menu_height = 200, 200
+    menu_width, menu_height = 300, 250
     menu_surface = pygame.Surface((menu_width, menu_height), pygame.SRCALPHA)
     grey_color = hex_to_rgb('#595450', 5)  # Convert hex to RGBA with transparency
     draw_rounded_corners(menu_surface, grey_color, menu_surface.get_rect(), 25)
@@ -53,23 +53,28 @@ def draw_menu(screen):
     menu_font = pygame.font.Font(None, 36)
     
     # Menu text
+    # menu_font.render(text, antialias, color)
     menu_text = menu_font.render('Menu', True, hex_to_rgb('#ad0202'))
+    char_select = menu_font.render('Change Character', True, hex_to_rgb('#ad0202'))
     settings_text = menu_font.render('Settings', True, hex_to_rgb('#ad0202'))
     close_text = menu_font.render('Close Game', True, hex_to_rgb('#ad0202'))
     
     # Button positions
     menu_text_rect = menu_text.get_rect(center=(menu_width // 2, 50))
-    settings_text_rect = settings_text.get_rect(center=(menu_width // 2, 100))
-    close_text_rect = close_text.get_rect(center=(menu_width // 2, 150))
+    char_select_rect = char_select.get_rect(center=(menu_width // 2, 100))
+    settings_text_rect = settings_text.get_rect(center=(menu_width // 2, 150))
+    close_text_rect = close_text.get_rect(center=(menu_width // 2, 200))
     
     # Draw borders around text
     border_color = hex_to_rgb('#fafafa', 5)
     draw_rounded_corners(menu_surface, border_color, menu_text_rect.inflate(15, 5), 20)
+    draw_rounded_corners(menu_surface, border_color, char_select_rect.inflate(15, 5), 20)
     draw_rounded_corners(menu_surface, border_color, settings_text_rect.inflate(15, 5), 20)
     draw_rounded_corners(menu_surface, border_color, close_text_rect.inflate(15, 5), 20)
 
     # Blit text onto the menu surface
     menu_surface.blit(menu_text, menu_text_rect)
+    menu_surface.blit(char_select, char_select_rect)
     menu_surface.blit(settings_text, settings_text_rect)
     menu_surface.blit(close_text, close_text_rect)
     
@@ -78,10 +83,11 @@ def draw_menu(screen):
     
     # Inflate the rectangles for larger click areas
     menu_click_box = menu_text_rect.inflate(30, 20)
+    char_select_click_box = char_select_rect.inflate(30, 20)
     setting_click_box = settings_text_rect.inflate(30, 20)
     close_click_box = close_text_rect.inflate(30, 20)
 
-    return menu_click_box, setting_click_box, close_click_box
+    return menu_click_box, char_select_click_box,setting_click_box, close_click_box
 
 while running:
     for event in pygame.event.get():
@@ -127,7 +133,7 @@ while running:
         text = font.render(f'Health: {player.health}', True, (255, 255, 255))
         screen.blit(text, (0, 0))
     else:
-        menu_click_box, settings_click_box, close_click_box = draw_menu(screen)
+        menu_click_box, char_select_click_box,settings_click_box, close_click_box = draw_menu(screen)
 
     pygame.display.flip()
 
