@@ -130,16 +130,16 @@ while running:
         # could also be used to fix the issue with the player obtaining more speed when multiple keys are pressed.
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             if keys[pygame.K_LSHIFT]:
-                player.run('left', game_time)
+                player.move('left', game_time, is_running=True)
             else:
                 player.isRunning = False
-                player.move('left',game_time)
+                player.move('left',game_time, is_running=False)
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             if keys[pygame.K_LSHIFT]:
-                player.run('right',game_time)
+                player.move('right',game_time,is_running=True)
             else:
                 player.isRunning = False
-                player.move('right',game_time)
+                player.move('right',game_time,)
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
             player.move('down',game_time)
         if keys[pygame.K_UP] or keys[pygame.K_w]:
