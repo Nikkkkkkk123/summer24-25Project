@@ -12,7 +12,8 @@ class Player:
     # Constructor
     def __init__(self, sprite, screenWidth, screenHeight):
         # All values are subject to change
-        self.speed = 2
+        self.speed = 1
+        self.running_speed = 4
         self.health = 100
 
         # Define the size of the frame
@@ -129,7 +130,11 @@ class Player:
         self.hurt_image = self.hurtFrames[self.hurtIndex]
     
     # Since this is a 2D game, The player can only move along the x-axis
-    def move(self, direction):
+    def move(self, direction, game_time):
+        
+        # Calculate the distance the player should move
+        distance = self.speed * game_time
+
         if direction == 'left':
             # Check the player direction, if it is not the same as the direction we want to move, flip the image
             if self.direction != 'left':
@@ -138,7 +143,10 @@ class Player:
                 self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
                 self.jumpFrames = [pygame.transform.flip(frame, True, False) for frame in self.jumpFrames]
                 self.direction = 'left'
-            
+
+            # Distance player is moving        
+            if self.x - distance > 0:
+                self.x -= distance
             # Move the player
             if self.x - self.speed > 0:
                 self.x -= self.speed
@@ -150,7 +158,11 @@ class Player:
                 self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
                 self.jumpFrames = [pygame.transform.flip(frame, True, False) for frame in self.jumpFrames]
                 self.direction = 'right'
-            
+
+            # Distance player is moving        
+            if self.x + distance < self.screenWidth - self.frameWidth:
+                self.x += distance
+
             # Move the player
             if self.x + self.speed < self.screenWidth - self.frameWidth:
                 self.x += self.speed
@@ -158,9 +170,14 @@ class Player:
         elif direction == 'down':
             if self.y + self.speed < self.screenHeight - self.frameHeight:
                 self.y += self.speed
+            # distance player is moving
+            if self.y + distance < self.screenHeight - self.frameHeight:
+                self.y += distance
         elif direction == 'up':
             if self.y - self.speed > 0:
                 self.y -= self.speed
+            if self.y - distance > 0:
+                self.y -= distance
 
         # Update the animation frame
         self.walking_animation_count += 1
@@ -170,26 +187,29 @@ class Player:
             self.image = self.walkingFrames[self.walkingIndex]
     
     #Sprite running
-    def run(self,direction):
+    def run(self,direction,game_time):
+        
+        # Calculate the distance the player should move
+        distance = self.running_speed * game_time
         self.isRunning = True
         if direction == 'left':
             if self.direction != 'left':
                 self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
                 self.direction = 'left'
-            if self.x - self.speed > 0:
-                self.x -= self.speed
+            if self.x - distance > 0:
+                self.x -= distance
         elif direction == 'right':
             if self.direction != 'right':
                 self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
                 self.direction = 'right'
-            if self.x + self.speed < self.screenWidth - self.frameWidth:
-                self.x += self.speed
+            if self.x + distance < self.screenWidth - self.frameWidth:
+                self.x += distance
         elif direction == 'down':
-            if self.y + self.speed < self.screenHeight - self.frameHeight:
-                self.y += self.speed
+            if self.y + distance < self.screenHeight - self.frameHeight:
+                self.y += distance
         elif direction == 'up':
-            if self.y - self.speed > 0:
-                self.y -= self.speed
+            if self.y - distance > 0:
+                self.y -= distance
         
         self.run_animation_count += 1
         if self.run_animation_count >= self.run_animation_speed:

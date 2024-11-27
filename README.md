@@ -7,3 +7,4 @@ background.png: https://www.wallpaperflare.com/digital-digital-art-artwork-fanta
 MaleSwordsMan: https://craftpix.net/freebies/free-fantasy-chibi-male-sprites-pixel-art/
 
 # Added Menu 26/11 (Dylan)
+# Added Distance of player movement 27/11(Dylan)
