@@ -108,7 +108,7 @@ while running:
                 # If the menu has been deactivated, reset the click boxes
                 if not menu_active:
                     menu_click_box, char_select_click_box, settings_click_box, close_click_box = None, None, None, None
-                    
+
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if menu_active:
                 # Obtain the position of the mouse cursor
@@ -123,6 +123,8 @@ while running:
 
     if not menu_active:
         keys = pygame.key.get_pressed()
+        # print(keys.count(1)) This allows for the number of keys pressed to be displayed. This could be used to know the original direction. Potentially
+        # could also be used to fix the issue with the player obtaining more speed when multiple keys are pressed.
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             if keys[pygame.K_LSHIFT]:
                 player.run('left')
