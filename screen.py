@@ -1,6 +1,7 @@
 import pygame
 from player import Player
-
+from enemies import Enemies
+import random
 # Initialize the pygame
 pygame.init()
 
@@ -26,6 +27,7 @@ background = pygame.transform.scale(background, (screen_width, screen_height))
 
 # Create a player object. Player(characterused, screenWidth, screenHeight)
 player = Player('MaleSwordsMan', screen_width, screen_height)
+enemies = Enemies( 100, 100)
 
 # Boolean variable to control the main loop
 running = True
@@ -96,6 +98,9 @@ def draw_menu(screen):
 
     return menu_click_box, char_select_click_box,setting_click_box, close_click_box
 
+#List of Enemies that can be spawned
+enemy_list = [Enemies(random.randint(0, screen_width), random.randint(0, screen_height)) for _ in range(5)]
+
 while running:
     # GAME CLOCK 
     game_time = pygame.time.get_ticks() / 1000
@@ -151,6 +156,11 @@ while running:
         player.draw(screen)
         text = font.render(f'Health: {player.health}', True, (255, 255, 255))
         screen.blit(text, (0, 0))
+
+        # Draw the enemies
+        for enemy in enemy_list:
+            enemy.move()
+            enemy.draw(screen)
     else:
         menu_click_box, char_select_click_box,settings_click_box, close_click_box = draw_menu(screen)
 
@@ -163,6 +173,10 @@ while running:
             pygame.mouse.set_cursor(pointer_cursor)
         elif pygame.mouse.get_cursor() != default_cursor:
             pygame.mouse.set_cursor(default_cursor)
+
+    # Show the postion of the player on the screen for debugging purposes
+    postion_text = font.render(f'Player Position: {player.rect.topleft}', True, (255, 255, 255))
+    screen.blit(postion_text, (0, 30))
 
     pygame.display.flip()
 

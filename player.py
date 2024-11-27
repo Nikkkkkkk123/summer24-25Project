@@ -12,8 +12,8 @@ class Player:
     # Constructor
     def __init__(self, sprite, screenWidth, screenHeight):
         # All values are subject to change
-        self.speed = .4
-        self.running_speed = 1
+        self.speed = 2
+        self.running_speed = 6
         self.health = 100
 
         # Define the size of the frame
@@ -62,7 +62,9 @@ class Player:
         # Screen dimensions
         self.screenWidth = screenWidth
         self.screenHeight = screenHeight
-        
+
+        #USED TO TEST THE PLAYER MOVEMENT
+        self.rect = pygame.Rect(self.x, self.y, self.frameWidth, self.frameHeight)
     def loadWalkingSprite(self):
         # Loads the walking sprite from the png
         self.walkingSprite = pygame.image.load('MaleSwordsMan/Walk.png')
@@ -133,8 +135,8 @@ class Player:
     def move(self, direction, game_time, is_running=False):
 
         speed = self.running_speed if is_running else self.speed
-        #Calculate distance player is moving (speed * time =  distance)
-        distance = speed * game_time 
+        #Calculate distance player is moving 
+        distance = speed 
 
         if direction == 'left':
 
@@ -168,6 +170,16 @@ class Player:
             if self.y + distance <= self.screenHeight - self.frameHeight:
                 self.y += distance
 
+        #Check if player is within the screen boundaries
+        if self.x < 0:
+            self.x = 0
+        if self.x > self.screenWidth - self.frameWidth:
+            self.x = self.screenWidth - self.frameWidth
+        if self.y < 0:
+            self.y = 0
+        if self.y > self.screenHeight - self.frameHeight:
+            self.y = self.screenHeight - self.frameHeight
+        
         #Following is a test to see if backwards player is fixed ** TEST **
 
         #UPDATED: 27/11/2024 animation frame
@@ -184,6 +196,9 @@ class Player:
                 self.image = self.walkingFrames[self.walkingIndex]
                 self.walking_animation_count = 0
 
+        #Updates the players location while moving
+        self.rect.topleft = (self.x, self.y)
+    
     # Method for attacking
     def attack(self):
         self.isAttacking = True # Set the boolean to true. This allows the program to know that the player is attacking
