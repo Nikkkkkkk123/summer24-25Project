@@ -31,6 +31,9 @@ player = Player('MaleSwordsMan', screen_width, screen_height)
 running = True
 menu_active = False
 
+# Store the boxes. This allows for it to only be drawn once as the menu is being called
+menu_click_box, char_select_click_box, settings_click_box, close_click_box = None, None, None, None
+
 def resize_screen(width, height):
     global screen, player, background
     screen = pygame.display.set_mode((width, height), pygame.FULLSCREEN)
@@ -99,11 +102,19 @@ while running:
             running = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
+                # Swap the menu boolean to indicate if the menu is in use or not
                 menu_active = not menu_active
+
+                # Check if the menu has now been activated. If yes than draw the menu. else set the boxes to None
+                if menu_active:
+                    menu_click_box, char_select_click_box, settings_click_box, close_click_box = draw_menu(screen)
+                else:
+                    menu_click_box, char_select_click_box, settings_click_box, close_click_box = None, None, None, None
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if menu_active:
+                # Obtain the position of the mouse cursor
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                menu_click_box, char_select_click_box, settings_click_box, close_click_box = draw_menu(screen)
+                # Check if the mouse click is within the bounds of the buttons
                 if settings_click_box.collidepoint(mouse_x - (screen_width // 2 - 100), mouse_y - (screen_height // 2 - 100)):
                     print("Settings button clicked")
                 elif close_click_box.collidepoint(mouse_x - (screen_width // 2 - 100), mouse_y - (screen_height // 2 - 100)):
@@ -116,7 +127,6 @@ while running:
     # and is not hovering a button than change it back to the default cursor.
     if menu_active:
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        menu_click_box, char_select_click_box, settings_click_box, close_click_box = draw_menu(screen)
         if any(box.collidepoint(mouse_x - (screen_width // 2 - 100), mouse_y - (screen_height // 2 - 100)) for box in [menu_click_box, char_select_click_box, settings_click_box, close_click_box]):
             pygame.mouse.set_cursor(pointer_cursor)
         elif pygame.mouse.get_cursor() != default_cursor:
