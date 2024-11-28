@@ -20,7 +20,7 @@ screen_width = display_info.current_w
 screen_height = display_info.current_h
 
 # Define the screen dimensions 
-screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.SCALED | pygame.FULLSCREEN)
 
 background = pygame.image.load('background.png')
 background = pygame.transform.scale(background, (screen_width, screen_height))
