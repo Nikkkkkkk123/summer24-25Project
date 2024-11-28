@@ -40,6 +40,8 @@ class Enemies (pygame.sprite.Sprite):
         # Enemy Dimensions
         self.frameWidth = 45
         self.frameHeight = 75
+        self.x = self.frameWidth
+        self.y = self.frameHeight
 
         # Load and scale the enemy image
         self.image = pygame.image.load("Enemies/enemy.png")
@@ -47,6 +49,9 @@ class Enemies (pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
 
+        # Screen dimensions
+        self.screenWidth = screenWidth
+        self.screenHeight = screenHeight
 
     def move(self):
         # Move the enemy
@@ -68,6 +73,16 @@ class Enemies (pygame.sprite.Sprite):
         else:
             self.targeted_player = False
 
+         # Check if Enemy is within the screen boundaries
+        if self.x < 0:
+            self.x = 10
+        if self.x >= self.screenWidth:
+            self.x = self.screenWidth
+        elif self.y < 566:
+            self.y = 566
+        elif self.y > self.screenHeight:
+            self.y = self.screenHeight
+        
     # Method for when the current enemy is hit
     def hurt (self, damage):
         self.health -= damage
