@@ -18,7 +18,7 @@ class Enemies (pygame.sprite.Sprite):
     # drop_type: need to implement loot system
     # AI: wander
 
-    def __init__(self, x, y, player):
+    def __init__(self, x, y, player, screenWidth, screenHeight):
         super().__init__()
         self.health = 100
         self.damage = 10
