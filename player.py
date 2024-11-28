@@ -12,8 +12,8 @@ class Player:
     # Constructor
     def __init__(self, sprite, screenWidth, screenHeight):
         # All values are subject to change
-        self.speed = 1
-        self.running_speed = 4
+        self.speed = 2
+        self.running_speed = 6
         self.health = 100
 
         # Define the size of the frame
@@ -62,7 +62,9 @@ class Player:
         # Screen dimensions
         self.screenWidth = screenWidth
         self.screenHeight = screenHeight
-        
+
+        #USED TO TEST THE PLAYER MOVEMENT
+        self.rect = pygame.Rect(self.x, self.y, self.frameWidth, self.frameHeight)
     def loadWalkingSprite(self):
         # Loads the walking sprite from the png
         self.walkingSprite = pygame.image.load('MaleSwordsMan/Walk.png')
@@ -130,93 +132,73 @@ class Player:
         self.hurt_image = self.hurtFrames[self.hurtIndex]
     
     # Since this is a 2D game, The player can only move along the x-axis
-    def move(self, direction, game_time):
-        
-        # Calculate the distance the player should move
-        distance = self.speed * game_time
+    def move(self, direction, game_time, is_running=False):
+
+        speed = self.running_speed if is_running else self.speed
+        #Calculate distance player is moving 
+        distance = speed 
 
         if direction == 'left':
-            # Check the player direction, if it is not the same as the direction we want to move, flip the image
+
+            #check player direction 
             if self.direction != 'left':
-                # Change the image of the player. This will be used to animate the player
+                #flip the sprite to face direction of travel
                 self.walkingFrames = [pygame.transform.flip(frame, True, False) for frame in self.walkingFrames]
                 self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
-                self.jumpFrames = [pygame.transform.flip(frame, True, False) for frame in self.jumpFrames]
                 self.direction = 'left'
-
-            # Distance player is moving        
-            if self.x - distance > 0:
+            #Move the player 
+            if self.x - distance >= 0:
                 self.x -= distance
-            # Move the player
-            if self.x - self.speed > 0:
-                self.x -= self.speed
-            
         elif direction == 'right':
+
+            #check player direction 
             if self.direction != 'right':
-                # Change the image of the player. This will be used to animate the player
+                #flip the sprite to face direction of travel
                 self.walkingFrames = [pygame.transform.flip(frame, True, False) for frame in self.walkingFrames]
                 self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
-                self.jumpFrames = [pygame.transform.flip(frame, True, False) for frame in self.jumpFrames]
                 self.direction = 'right'
-
-            # Distance player is moving        
-            if self.x + distance < self.screenWidth - self.frameWidth:
+            #Move the player 
+            if self.x + distance <= self.screenWidth - self.frameWidth:
                 self.x += distance
-
-            # Move the player
-            if self.x + self.speed < self.screenWidth - self.frameWidth:
-                self.x += self.speed
-
-        elif direction == 'down':
-            if self.y + self.speed < self.screenHeight - self.frameHeight:
-                self.y += self.speed
-            # distance player is moving
-            if self.y + distance < self.screenHeight - self.frameHeight:
-                self.y += distance
         elif direction == 'up':
-            if self.y - self.speed > 0:
-                self.y -= self.speed
-            if self.y - distance > 0:
+            # Move the player up
+            if self.y - distance >= 0:
                 self.y -= distance
+        
+        elif direction == 'down':
+            # Move the player down
+            if self.y + distance <= self.screenHeight - self.frameHeight:
+                self.y += distance
 
-        # Update the animation frame
-        self.walking_animation_count += 1
-        if self.walking_animation_count >= self.animation_speed:
-            self.walking_animation_count = 0
-            self.walkingIndex = (self.walkingIndex + 1) % self.numWalkingFrames
-            self.image = self.walkingFrames[self.walkingIndex]
+        #Check if player is within the screen boundaries
+        if self.x < 0:
+            self.x = 0
+        if self.x > self.screenWidth - self.frameWidth:
+            self.x = self.screenWidth - self.frameWidth
+        if self.y < 0:
+            self.y = 0
+        if self.y > self.screenHeight - self.frameHeight:
+            self.y = self.screenHeight - self.frameHeight
+        
+        #Following is a test to see if backwards player is fixed ** TEST **
+
+        #UPDATED: 27/11/2024 animation frame
+        if is_running:
+            self.run_animation_count += 1
+            if self.run_animation_count >= self.run_animation_speed:
+                self.runIndex = (self.runIndex + 1) % self.numRunFrames
+                self.image = self.runFrames[self.runIndex]
+                self.run_animation_count = 0
+        else:
+            self.walking_animation_count += 1
+            if self.walking_animation_count >= self.animation_speed:
+                self.walkingIndex = (self.walkingIndex + 1) % self.numWalkingFrames
+                self.image = self.walkingFrames[self.walkingIndex]
+                self.walking_animation_count = 0
+
+        #Updates the players location while moving
+        self.rect.topleft = (self.x, self.y)
     
-    #Sprite running
-    def run(self,direction,game_time):
-        
-        # Calculate the distance the player should move
-        distance = self.running_speed * game_time
-        self.isRunning = True
-        if direction == 'left':
-            if self.direction != 'left':
-                self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
-                self.direction = 'left'
-            if self.x - distance > 0:
-                self.x -= distance
-        elif direction == 'right':
-            if self.direction != 'right':
-                self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
-                self.direction = 'right'
-            if self.x + distance < self.screenWidth - self.frameWidth:
-                self.x += distance
-        elif direction == 'down':
-            if self.y + distance < self.screenHeight - self.frameHeight:
-                self.y += distance
-        elif direction == 'up':
-            if self.y - distance > 0:
-                self.y -= distance
-        
-        self.run_animation_count += 1
-        if self.run_animation_count >= self.run_animation_speed:
-            self.run_animation_count = 0
-            self.runIndex = (self.runIndex + 1) % self.numRunFrames
-            self.run_image = self.runFrames[self.runIndex]
-
     # Method for attacking
     def attack(self):
         self.isAttacking = True # Set the boolean to true. This allows the program to know that the player is attacking
@@ -269,7 +251,7 @@ class Player:
                 self.jumpIndex = (self.jumpIndex + 1) % self.numJumpFrames
                 self.image = self.jumpFrames[self.jumpIndex]
                 screen.blit(self.image, (self.x, self.y))
-                pygame.time.delay(35)
+                pygame.time.delay(20)
 
                 # If the player has reached the end of the jumping animation, reset the animation
                 if self.jumpIndex == self.numJumpFrames - 1:
@@ -286,7 +268,7 @@ class Player:
                 self.runIndex = (self.runIndex + 1) % self.numRunFrames
                 self.image = self.runFrames[self.runIndex]
                 screen.blit(self.image, (self.x, self.y))
-                pygame.time.delay(20)
+                pygame.time.delay(10)
 
         else:
             screen.blit(self.image, (self.x, self.y))
