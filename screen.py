@@ -37,6 +37,7 @@ enemies = Enemies( 100, 100, player, screen_width, screen_height)
 # Boolean variable to control the main loop
 running = True
 menu_active = False
+is_running = False # This is used to determine if the player is running or not. This is used to determine the speed of the player.
 
 # Store the boxes. This allows for it to only be drawn once as the menu is being called
 menu_click_box, char_select_click_box, settings_click_box, close_click_box = None, None, None, None
@@ -129,7 +130,6 @@ while running:
                 # If the menu has been deactivated, reset the click boxes
                 if not menu_active:
                     menu_click_box, char_select_click_box, settings_click_box, close_click_box = None, None, None, None
-
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if menu_active:
                 # Obtain the position of the mouse cursor
@@ -151,24 +151,23 @@ while running:
 
     if not menu_active:
         keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_LSHIFT]:
+            is_running = True
+        elif is_running:
+            is_running = False
+
+
         # print(keys.count(1)) This allows for the number of keys pressed to be displayed. This could be used to know the original direction. Potentially
         # could also be used to fix the issue with the player obtaining more speed when multiple keys are pressed.
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            if keys[pygame.K_LSHIFT]:
-                player.move('left', game_time, is_running=True)
-            else:
-                player.isRunning = False
-                player.move('left',game_time, is_running=False)
+            player.move('left', game_time, is_running)
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            if keys[pygame.K_LSHIFT]:
-                player.move('right',game_time,is_running=True)
-            else:
-                player.isRunning = False
-                player.move('right',game_time,)
+            player.move('right',game_time,is_running)
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            player.move('down',game_time)
+            player.move('down',game_time, is_running)
         if keys[pygame.K_UP] or keys[pygame.K_w]:
-            player.move('up',game_time)
+            player.move('up',game_time, is_running)
         if keys[pygame.K_SPACE]:
             player.isRunning = False
             player.jump()
