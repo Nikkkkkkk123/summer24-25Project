@@ -9,6 +9,11 @@ pygame.init()
 default_cursor = pygame.cursors.arrow
 pointer_cursor = pygame.SYSTEM_CURSOR_HAND
 
+# Create sprite groups to sort the entities of characters
+all_entities = pygame.sprite.Group()
+enemies_group = pygame.sprite.Group() # Group for the enemy sprites
+enemy_list = pygame.sprite.OrderedUpdates()  # Group which keep order
+
 # Initialise the font module
 font = pygame.font.Font(None, 28)
 
@@ -101,6 +106,14 @@ def draw_menu(screen):
 #List of Enemies that can be spawned
 enemy_list = [Enemies(random.randint(0, screen_width), random.randint(0, screen_height), player) for _ in range(5)]
 
+
+# Add the player to the all_entities group
+all_entities.add(player)
+
+# Add the enemies to the enemies_group and all_entities group
+for enemy in enemy_list:
+    enemies_group.add([enemy])
+
 while running:
     # GAME CLOCK 
     game_time = pygame.time.get_ticks() / 1000
@@ -128,6 +141,14 @@ while running:
                     running = False
             else:
                 player.attack()
+
+                # Check if the player hit an enemy
+                hit = pygame.sprite.spritecollide(player, enemies_group, False)
+
+                # If the player hits an enemy than deal damage to the enemy
+                for enemy in hit:
+                    enemy.hurt(player.damage)
+                    enemies_group.sprites()[0].kill()
 
     if not menu_active:
         keys = pygame.key.get_pressed()
@@ -160,7 +181,7 @@ while running:
         # Draw the enemies
         for enemy in enemy_list:
             enemy.move()
-            enemy.draw(screen)
+            enemies_group.draw(screen)
     else:
         menu_click_box, char_select_click_box,settings_click_box, close_click_box = draw_menu(screen)
 

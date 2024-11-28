@@ -1,6 +1,6 @@
 import pygame
 
-class Player:
+class Player (pygame.sprite.Sprite):
 
     # Size of the player
     # Speed of the player(adjusted to 2 for now)
@@ -11,10 +11,13 @@ class Player:
 
     # Constructor
     def __init__(self, sprite, screenWidth, screenHeight):
+        super().__init__()
+        
         # All values are subject to change
         self.speed = 2
         self.running_speed = 6
         self.health = 100
+        self.damage = 100 # Damage the player does to the enemy
 
         # Define the size of the frame
         self.frameWidth = 128

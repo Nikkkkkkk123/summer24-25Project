@@ -1,7 +1,8 @@
 import pygame
 import random
 
-class Enemies:
+# Inheritance from the pygame.sprite.Sprite class. The sprite clas allows for the creation of sprite objects
+class Enemies (pygame.sprite.Sprite):
     # Enemies base level zombie(need good name) wonders, slow movers
     # Base level zombie
     # attributes:
@@ -18,6 +19,7 @@ class Enemies:
     # AI: wander
 
     def __init__(self, x, y, player):
+        super().__init__()
         self.health = 100
         self.damage = 10
         self.speed = 1
@@ -65,6 +67,13 @@ class Enemies:
             self.targeted_player = True
         else:
             self.targeted_player = False
+
+    # Method for when the current enemy is hit
+    def hurt (self, damage):
+        self.health -= damage
+        if self.health <= 0:
+            self.kill()
+            print("Enemy killed")
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
