@@ -20,9 +20,9 @@ class Player:
         self.frameWidth = 128
         self.frameHeight = 128
 
-        # Position of the player to be centre of the screen
+        # Position of the player to be centre of the screen intially
         self.x = (screenWidth - self.frameWidth) // 2
-        self.y = (screenHeight - self.frameHeight) // 2
+        self.y = (screenHeight - self.frameHeight) // 2 + 300
 
         # Direction of the player
         self.direction = 'right'

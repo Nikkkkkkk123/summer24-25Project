@@ -38,6 +38,8 @@ class Enemies:
         # Enemy Dimensions
         self.frameWidth = 45
         self.frameHeight = 75
+        self.x = self.frameWidth
+        self.y = self.frameHeight
 
         # Load and scale the enemy image
         self.image = pygame.image.load("Enemies/enemy.png")
@@ -71,11 +73,13 @@ class Enemies:
 
          # Check if Enemy is within the screen boundaries
         if self.x < 0:
-            self.x = 0
-        if self.x > self.screenWidth:
+            self.x = 10
+        if self.x >= self.screenWidth:
             self.x = self.screenWidth
         elif self.y < 566:
             self.y = 566
+        elif self.y > self.screenHeight:
+            self.y = self.screenHeight
         
     def draw(self, screen):
         screen.blit(self.image, self.rect)
