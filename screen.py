@@ -32,7 +32,7 @@ background = pygame.transform.scale(background, (screen_width, screen_height))
 
 # Create a player object. Player(characterused, screenWidth, screenHeight)
 player = Player('MaleSwordsMan', screen_width, screen_height)
-enemies = Enemies( 100, 100, player)
+enemies = Enemies( 100, 100, player, screen_width, screen_height)
 
 # Boolean variable to control the main loop
 running = True
@@ -104,7 +104,7 @@ def draw_menu(screen):
     return menu_click_box, char_select_click_box,setting_click_box, close_click_box
 
 #List of Enemies that can be spawned
-enemy_list = [Enemies(random.randint(0, screen_width), random.randint(0, screen_height), player) for _ in range(5)]
+enemy_list = [Enemies(random.randint(0, screen_width), random.randint(0, screen_height), player, screen_width, screen_height) for _ in range(5)]
 
 
 # Add the player to the all_entities group
