@@ -161,6 +161,8 @@ while running:
         for enemy in enemy_list:
             enemy.move()
             enemy.draw(screen)
+        
+        
     else:
         menu_click_box, char_select_click_box,settings_click_box, close_click_box = draw_menu(screen)
 

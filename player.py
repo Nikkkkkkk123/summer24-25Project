@@ -170,18 +170,16 @@ class Player:
             if self.y + distance <= self.screenHeight - self.frameHeight:
                 self.y += distance
 
-        #Check if player is within the screen boundaries
+        # Check if player is within the screen boundaries
         if self.x < 0:
             self.x = 0
-        if self.x > self.screenWidth - self.frameWidth:
-            self.x = self.screenWidth - self.frameWidth
-        if self.y < 0:
-            self.y = 0
-        if self.y > self.screenHeight - self.frameHeight:
-            self.y = self.screenHeight - self.frameHeight
+        if self.x > self.screenWidth:
+            self.x = self.screenWidth
+        elif self.y < 566:
+            self.y = 566
+
         
         #Following is a test to see if backwards player is fixed ** TEST **
-
         #UPDATED: 27/11/2024 animation frame
         if is_running:
             self.run_animation_count += 1

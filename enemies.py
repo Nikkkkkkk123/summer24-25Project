@@ -17,7 +17,7 @@ class Enemies:
     # drop_type: need to implement loot system
     # AI: wander
 
-    def __init__(self, x, y):
+    def __init__(self, x, y,screenWidth, screenHeight):
         self.health = 100
         self.damage = 10
         self.speed = 1
@@ -45,6 +45,9 @@ class Enemies:
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
 
+        # Screen dimensions
+        self.screenWidth = screenWidth
+        self.screenHeight = screenHeight
 
     def move(self):
         # Move the enemy
@@ -66,5 +69,13 @@ class Enemies:
         else:
             self.targeted_player = False
 
+         # Check if Enemy is within the screen boundaries
+        if self.x < 0:
+            self.x = 0
+        if self.x > self.screenWidth:
+            self.x = self.screenWidth
+        elif self.y < 566:
+            self.y = 566
+        
     def draw(self, screen):
         screen.blit(self.image, self.rect)
