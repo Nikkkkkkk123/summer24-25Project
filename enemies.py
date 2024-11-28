@@ -17,7 +17,7 @@ class Enemies:
     # drop_type: need to implement loot system
     # AI: wander
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, player):
         self.health = 100
         self.damage = 10
         self.speed = 1
@@ -30,8 +30,8 @@ class Enemies:
         self.drop_type = None  # create loot system later
 
         # AI attributes
-        self.target = None  # target player
-        self.targeted_player = False
+        self.target = player  # target player
+        self.targeted_player = True
         self.vison_range = 500
         self.walk_speed = 0.75
 
