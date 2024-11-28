@@ -73,7 +73,6 @@ class Enemies (pygame.sprite.Sprite):
         self.health -= damage
         if self.health <= 0:
             self.kill()
-            print("Enemy killed")
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)

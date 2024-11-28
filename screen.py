@@ -148,7 +148,6 @@ while running:
                 # If the player hits an enemy than deal damage to the enemy
                 for enemy in hit:
                     enemy.hurt(player.damage)
-                    enemies_group.sprites()[0].kill()
 
     if not menu_active:
         keys = pygame.key.get_pressed()
