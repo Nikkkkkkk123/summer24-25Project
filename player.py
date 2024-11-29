@@ -18,7 +18,7 @@ class Player (pygame.sprite.Sprite):
         self.speed = 2
         self.running_speed = 6
         self.health = 100
-        self.damage = 100 # Damage the player does to the enemy
+        self.damage = 10 # Damage the player does to the enemy
 
         # Define the size of the frame
         self.frameWidth = 128
@@ -244,6 +244,10 @@ class Player (pygame.sprite.Sprite):
         self.hurt_animation_count = 0
         self.hurtIndex = 0
         self.health -= damage
+
+        # When ready to implement the player dying
+        # if self.health <= 0:
+        #     print("Player has died")
 
     #Method for jumping
     def jump(self):
