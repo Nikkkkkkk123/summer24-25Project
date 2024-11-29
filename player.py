@@ -138,7 +138,9 @@ class Player (pygame.sprite.Sprite):
     def move(self, direction, no_keys_pressed, is_running=False):
         
         #Calculate distance player is moving 
-        # Updated (20/11/2024) This update avoids the player doubling their speed by pressing multiple buttons at the same time
+        # Updated (29/11/2024) This update avoids the player doubling their speed by pressing multiple buttons at the same time
+        speed = self.running_speed if is_running else self.speed
+
         if no_keys_pressed > 1 and not is_running:
             speed = self.speed / 2
         elif no_keys_pressed > 2 and is_running:
