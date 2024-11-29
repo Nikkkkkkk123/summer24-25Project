@@ -35,6 +35,7 @@ class Enemies (pygame.sprite.Sprite):
         self.target = player  # target player
         self.targeted_player = True
         self.vison_range = 500
+        self.attack_range = 50
         self.walk_speed = 0.75
 
         # Enemy Dimensions

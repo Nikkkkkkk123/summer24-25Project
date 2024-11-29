@@ -214,9 +214,10 @@ class Player (pygame.sprite.Sprite):
         self.attackIndex = 0
 
     # Method to check if the player has been hit
-    def hurt(self):
+    def hurt(self, damage):
         self.hurt_animation_count = 0
         self.hurtIndex = 0
+        self.health -= damage
 
     #Method for jumping
     def jump(self):
