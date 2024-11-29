@@ -53,11 +53,20 @@ class Enemies (pygame.sprite.Sprite):
         self.screenWidth = screenWidth
         self.screenHeight = screenHeight
 
+        # Boolean variable to check if the enemy has died
+        # time the sprite died to remove it from the group
         self.died = False
+        self.timeDied = 0
 
     def move(self):
-        if self.died:
-            self.kill()
+
+        # If the sprite has died and enough time has passed than the sprite will be removed from the group
+        # This visualises to the user that they sucessfully killed the enemy
+        if self.died and pygame.time.get_ticks() - self.timeDied > 1000:
+            self.kill() # This removes the sprite from the group. This allows them to no longer appear on the screen
+        # If the sprite has died but not enough time return. This stops the sprite from still moving while it is dead
+        elif self.died:
+            return
 
         # Move the enemy
         if self.targeted_player:
@@ -91,9 +100,14 @@ class Enemies (pygame.sprite.Sprite):
     # Method for when the current enemy is hit
     def hurt (self, damage):
         self.health -= damage
+
+        # Check if the enemy has no more health. Meaning that they were killed
         if self.health <= 0:
             self.died = True
             self.image = pygame.transform.rotate(self.image, 90)
+
+            # The time the sprite died is recorded. This is used to remove the sprite from the group after a certain amount of time
+            self.timeDied = pygame.time.get_ticks()
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
