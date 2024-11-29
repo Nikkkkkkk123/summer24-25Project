@@ -143,12 +143,11 @@ while running:
             else:
                 player.attack()
 
-                # Check if the player hit an enemy
-                hit = pygame.sprite.spritecollide(player, enemies_group, False)
-
-                # If the player hits an enemy than deal damage to the enemy
-                for enemy in hit:
-                    enemy.hurt(player.damage)
+                for enemy in enemies_group:
+                    if player.attack_hitbox.colliderect(enemy.rect):
+                        died = enemy.hurt(player.damage)
+                        if died:
+                            player.score += 1
 
     if not menu_active:
         keys = pygame.key.get_pressed()
@@ -179,10 +178,18 @@ while running:
         player.draw(screen)
         text = font.render(f'Health: {player.health}', True, (255, 255, 255))
         screen.blit(text, (0, 0))
+        text = font.render(f'Score: {player.score}', True, (255, 255, 255))
+        screen.blit(text, (0, 15))
 
         # Draw the enemies
         for enemy in enemy_list:
             enemy.move()
+
+            # See if enemy hits play
+            if enemy.rect.colliderect(player.rect):
+                player.hurt(enemy.damage)
+                # if player.health <= 0:
+                #     running = False
             enemies_group.draw(screen)
     else:
         menu_click_box, char_select_click_box,settings_click_box, close_click_box = draw_menu(screen)

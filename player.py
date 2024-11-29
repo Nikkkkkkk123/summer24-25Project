@@ -8,6 +8,7 @@ class Player (pygame.sprite.Sprite):
     # Image of the player (IDK how this will look atm)
     # Direction of the player avatar
     # Player Health (26/11/2024)
+    # Adding an attack hit box (2024/11/29) This could attempt to resolve the issue of hitting zombies above. Maybe this should be weapon specific?
 
     # Constructor
     def __init__(self, sprite, screenWidth, screenHeight):
@@ -17,7 +18,8 @@ class Player (pygame.sprite.Sprite):
         self.speed = 2
         self.running_speed = 6
         self.health = 100
-        self.damage = 100 # Damage the player does to the enemy
+        self.score = 0
+        self.damage = 10 # Damage the player does to the enemy
 
         # Define the size of the frame
         self.frameWidth = 128
@@ -27,8 +29,11 @@ class Player (pygame.sprite.Sprite):
         self.x = (screenWidth - self.frameWidth) // 2
         self.y = (screenHeight - self.frameHeight) // 2 + 300
 
-        # Define a smaller hitbox
+        # Define a smaller hitbox. This is used to check for collisions with the enemy
         self.hitbox = pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 55, self.frameHeight - 40)
+
+        # Attack hitbox. This defines the area that the player can hit an enemy in it is used to check for collisions with the enemy
+        self.attack_hitbox = pygame.Rect(self.x + 70, self.y + 70, self.frameWidth - 70, self.frameHeight - 80)
 
         # Direction of the player
         self.direction = 'right'
@@ -144,6 +149,7 @@ class Player (pygame.sprite.Sprite):
         # Updated (29/11/2024) This update avoids the player doubling their speed by pressing multiple buttons at the same time
         speed = self.running_speed if is_running else self.speed
 
+        # If the player is holding 2 directional keys their speed is halved to avoid them going double the normal speed
         if no_keys_pressed > 1 and not is_running:
             speed = self.speed / 2
         elif no_keys_pressed > 2 and is_running:
@@ -160,10 +166,11 @@ class Player (pygame.sprite.Sprite):
                 self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
                 self.direction = 'left'
             #Move the player 
-            if self.x - distance >= 0:
+            # (29/11/2024) Changed to use the new smaller hitbox x value and hitbox width. 
+            # This change allows the user to run from edge to edge accross the whole map
+            if self.hitbox.x - distance >= 0:
                 self.x -= distance
         elif direction == 'right':
-
             #check player direction 
             if self.direction != 'right':
                 #flip the sprite to face direction of travel
@@ -171,20 +178,22 @@ class Player (pygame.sprite.Sprite):
                 self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
                 self.direction = 'right'
             #Move the player 
-            if self.x + distance <= self.screenWidth - self.frameWidth:
+            # (29/11/2024) Changed to use the new smaller hitbox x value and hitbox width. 
+            # This change allows the user to run from edge to edge accross the whole map
+            if self.hitbox.x + distance <= self.screenWidth - self.hitbox.width:
                 self.x += distance
         elif direction == 'up':
             # Move the player up
             if self.y - distance >= 0:
                 self.y -= distance
-        
+                self.attack_hitbox.midleft = (self.x, self.y + 90)
         elif direction == 'down':
             # Move the player down
             if self.y + distance <= self.screenHeight - self.frameHeight:
                 self.y += distance
-
         # Check if player is within the screen boundaries
-        if self.x < 0:
+        # Pending change (29/11/2024). Self.hitbox.x is used allowing the player to go all the way left.
+        if self.hitbox.x < 0:
             self.x = 0
         if self.x > self.screenWidth:
             self.x = self.screenWidth
@@ -209,8 +218,22 @@ class Player (pygame.sprite.Sprite):
 
         #Updates the players location while moving
         self.rect.topleft = (self.x, self.y)
+
+        # Update the smaller hitbox
         self.hitbox = pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 55, self.frameHeight - 40)
+        self.attack_hitbox = self.Get_Attack_Hitbox(self.direction)
     
+    # Added 29/11/2024
+    # Method Name: Get_Attack_Hitbox
+    # Method Purpose: This method is used to get the attack hitbox of the player. This is used to ensure that the hitbox is in the correct direction
+    def Get_Attack_Hitbox(self, direction):
+        # Check the direction of the player
+        if direction == 'left':
+            self.attack_hitbox.midleft = (self.x, self.y + 90)
+        elif direction == 'right':
+            self.attack_hitbox = pygame.Rect(self.x + 70, self.y + 70, self.frameWidth - 70, self.frameHeight - 80)
+        return self.attack_hitbox
+
     # Method for attacking
     def attack(self):
         self.isAttacking = True # Set the boolean to true. This allows the program to know that the player is attacking
@@ -222,6 +245,10 @@ class Player (pygame.sprite.Sprite):
         self.hurt_animation_count = 0
         self.hurtIndex = 0
         self.health -= damage
+
+        # When ready to implement the player dying
+        # if self.health <= 0:
+        #     print("Player has died")
 
     #Method for jumping
     def jump(self):
@@ -244,6 +271,8 @@ class Player (pygame.sprite.Sprite):
             if self.attack_animation_count >= self.attack_animation_speed:
                 self.attackIndex = (self.attackIndex + 1) % self.numAttackFrames # Update the attack index 
                 self.attack_image = self.attackFrames[self.attackIndex]
+                attack_colour = (0, 0, 255)
+                pygame.draw.rect(screen, attack_colour,self.attack_hitbox, 2)  # 2 is the width of the hitbox outline
                 screen.blit(self.attack_image, (self.x, self.y)) # Display the frame change to the user
                 pygame.time.delay(35) # Delay to make the attack animation slower
 
@@ -289,4 +318,8 @@ class Player (pygame.sprite.Sprite):
             # Draw the hitbox (for debugging purposes)
             hitbox_color = (0, 255, 0)  # Green color for the hitbox
             pygame.draw.rect(screen, hitbox_color, self.hitbox, 2)  # 2 is the width of the hitbox outline
+
+            attack_colour = (0, 0, 255)
+            pygame.draw.rect(screen, attack_colour,self.attack_hitbox, 2)  # 2 is the width of the hitbox outline
+
             screen.blit(self.image, (self.x, self.y))

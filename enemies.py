@@ -100,6 +100,11 @@ class Enemies (pygame.sprite.Sprite):
         
     # Method for when the current enemy is hit
     def hurt (self, damage):
+
+        # Added (29/11/2024) If user attacked multiple time it would rotate the dead enemy
+        # and reset the tick counter. Updated to return if the enemy is already dead.
+        if self.died:
+            return
         self.health -= damage
 
         # Check if the enemy has no more health. Meaning that they were killed
@@ -109,6 +114,8 @@ class Enemies (pygame.sprite.Sprite):
 
             # The time the sprite died is recorded. This is used to remove the sprite from the group after a certain amount of time
             self.timeDied = pygame.time.get_ticks()
+            return True
+        return False
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
