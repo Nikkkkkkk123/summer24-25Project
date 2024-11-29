@@ -27,6 +27,9 @@ class Player (pygame.sprite.Sprite):
         self.x = (screenWidth - self.frameWidth) // 2
         self.y = (screenHeight - self.frameHeight) // 2 + 300
 
+        # Define a smaller hitbox
+        self.hitbox = pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 55, self.frameHeight - 40)
+
         # Direction of the player
         self.direction = 'right'
 
@@ -135,11 +138,18 @@ class Player (pygame.sprite.Sprite):
         self.hurt_image = self.hurtFrames[self.hurtIndex]
     
     # Since this is a 2D game, The player can only move along the x-axis
-    def move(self, direction, game_time, is_running=False):
-
-        speed = self.running_speed if is_running else self.speed
+    def move(self, direction, no_keys_pressed, is_running=False):
+        
         #Calculate distance player is moving 
-        distance = speed 
+        # Updated (29/11/2024) This update avoids the player doubling their speed by pressing multiple buttons at the same time
+        speed = self.running_speed if is_running else self.speed
+
+        if no_keys_pressed > 1 and not is_running:
+            speed = self.speed / 2
+        elif no_keys_pressed > 2 and is_running:
+            speed = self.running_speed / 2
+
+        distance = speed
 
         if direction == 'left':
 
@@ -199,6 +209,7 @@ class Player (pygame.sprite.Sprite):
 
         #Updates the players location while moving
         self.rect.topleft = (self.x, self.y)
+        self.hitbox = pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 55, self.frameHeight - 40)
     
     # Method for attacking
     def attack(self):
@@ -207,9 +218,10 @@ class Player (pygame.sprite.Sprite):
         self.attackIndex = 0
 
     # Method to check if the player has been hit
-    def hurt(self):
+    def hurt(self, damage):
         self.hurt_animation_count = 0
         self.hurtIndex = 0
+        self.health -= damage
 
     #Method for jumping
     def jump(self):
@@ -270,6 +282,11 @@ class Player (pygame.sprite.Sprite):
                 self.image = self.runFrames[self.runIndex]
                 screen.blit(self.image, (self.x, self.y))
                 pygame.time.delay(10)
-
         else:
+            # Draw the outline around the player's sprite
+            outline_color = (255, 0, 0)  # Red color for the outline
+            pygame.draw.rect(screen, outline_color, self.rect, 2)  # 2 is the width of the outline
+            # Draw the hitbox (for debugging purposes)
+            hitbox_color = (0, 255, 0)  # Green color for the hitbox
+            pygame.draw.rect(screen, hitbox_color, self.hitbox, 2)  # 2 is the width of the hitbox outline
             screen.blit(self.image, (self.x, self.y))
