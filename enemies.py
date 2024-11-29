@@ -53,7 +53,12 @@ class Enemies (pygame.sprite.Sprite):
         self.screenWidth = screenWidth
         self.screenHeight = screenHeight
 
+        self.died = False
+
     def move(self):
+        if self.died:
+            self.kill()
+
         # Move the enemy
         if self.targeted_player:
             # Move towards the player
@@ -87,7 +92,8 @@ class Enemies (pygame.sprite.Sprite):
     def hurt (self, damage):
         self.health -= damage
         if self.health <= 0:
-            self.kill()
+            self.died = True
+            self.image = pygame.transform.rotate(self.image, 90)
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)

@@ -152,6 +152,7 @@ while running:
     if not menu_active:
         keys = pygame.key.get_pressed()
 
+        # Check if the player is running
         if keys[pygame.K_LSHIFT]:
             is_running = True
         elif is_running:
@@ -171,6 +172,7 @@ while running:
         if keys[pygame.K_SPACE]:
             player.isRunning = False
             player.jump()
+            
         screen.blit(background, (0, 0))
         player.draw(screen)
         text = font.render(f'Health: {player.health}', True, (255, 255, 255))
