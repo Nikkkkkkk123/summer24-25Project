@@ -143,12 +143,9 @@ while running:
             else:
                 player.attack()
 
-                # Check if the player hit an enemy
-                hit = pygame.sprite.spritecollide(player, enemies_group, False)
-
-                # If the player hits an enemy than deal damage to the enemy
-                for enemy in hit:
-                    enemy.hurt(player.damage)
+                for enemy in enemies_group:
+                    if player.attack_hitbox.colliderect(enemy.rect):
+                        enemy.hurt(player.damage)
 
     if not menu_active:
         keys = pygame.key.get_pressed()
