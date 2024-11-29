@@ -114,6 +114,8 @@ class Enemies (pygame.sprite.Sprite):
 
             # The time the sprite died is recorded. This is used to remove the sprite from the group after a certain amount of time
             self.timeDied = pygame.time.get_ticks()
+            return True
+        return False
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)

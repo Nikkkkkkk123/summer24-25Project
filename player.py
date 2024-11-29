@@ -18,6 +18,7 @@ class Player (pygame.sprite.Sprite):
         self.speed = 2
         self.running_speed = 6
         self.health = 100
+        self.score = 0
         self.damage = 10 # Damage the player does to the enemy
 
         # Define the size of the frame

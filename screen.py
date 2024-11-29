@@ -145,7 +145,9 @@ while running:
 
                 for enemy in enemies_group:
                     if player.attack_hitbox.colliderect(enemy.rect):
-                        enemy.hurt(player.damage)
+                        died = enemy.hurt(player.damage)
+                        if died:
+                            player.score += 1
 
     if not menu_active:
         keys = pygame.key.get_pressed()
@@ -176,6 +178,8 @@ while running:
         player.draw(screen)
         text = font.render(f'Health: {player.health}', True, (255, 255, 255))
         screen.blit(text, (0, 0))
+        text = font.render(f'Score: {player.score}', True, (255, 255, 255))
+        screen.blit(text, (0, 15))
 
         # Draw the enemies
         for enemy in enemy_list:
