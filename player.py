@@ -160,11 +160,11 @@ class Player (pygame.sprite.Sprite):
                 self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
                 self.direction = 'left'
             #Move the player 
-            # Pending change (29/11/2024) using self.hitbox.x to allow the player to go all the way left
+            # (29/11/2024) Changed to use the new smaller hitbox x value and hitbox width. 
+            # This change allows the user to run from edge to edge accross the whole map
             if self.hitbox.x - distance >= 0:
                 self.x -= distance
         elif direction == 'right':
-
             #check player direction 
             if self.direction != 'right':
                 #flip the sprite to face direction of travel
@@ -172,6 +172,8 @@ class Player (pygame.sprite.Sprite):
                 self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
                 self.direction = 'right'
             #Move the player 
+            # (29/11/2024) Changed to use the new smaller hitbox x value and hitbox width. 
+            # This change allows the user to run from edge to edge accross the whole map
             if self.hitbox.x + distance <= self.screenWidth - self.hitbox.width:
                 self.x += distance
         elif direction == 'up':
