@@ -2,6 +2,7 @@ import pygame
 from player import Player
 from enemies import Enemies
 import random
+
 # Initialize the pygame
 pygame.init()
 
@@ -151,6 +152,7 @@ while running:
 
     if not menu_active:
         keys = pygame.key.get_pressed()
+        no_keys = keys.count(1)
 
         # Check if the player is running
         if keys[pygame.K_LSHIFT]:
@@ -162,17 +164,17 @@ while running:
         # print(keys.count(1)) This allows for the number of keys pressed to be displayed. This could be used to know the original direction. Potentially
         # could also be used to fix the issue with the player obtaining more speed when multiple keys are pressed.
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            player.move('left', game_time, is_running)
+            player.move('left', no_keys, is_running)
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            player.move('right',game_time,is_running)
+            player.move('right',no_keys,is_running)
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            player.move('down',game_time, is_running)
+            player.move('down',no_keys, is_running)
         if keys[pygame.K_UP] or keys[pygame.K_w]:
-            player.move('up',game_time, is_running)
+            player.move('up',no_keys, is_running)
         if keys[pygame.K_SPACE]:
             player.isRunning = False
             player.jump()
-            
+
         screen.blit(background, (0, 0))
         player.draw(screen)
         text = font.render(f'Health: {player.health}', True, (255, 255, 255))

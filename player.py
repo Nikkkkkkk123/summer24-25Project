@@ -135,11 +135,16 @@ class Player (pygame.sprite.Sprite):
         self.hurt_image = self.hurtFrames[self.hurtIndex]
     
     # Since this is a 2D game, The player can only move along the x-axis
-    def move(self, direction, game_time, is_running=False):
-
-        speed = self.running_speed if is_running else self.speed
+    def move(self, direction, no_keys_pressed, is_running=False):
+        
         #Calculate distance player is moving 
-        distance = speed 
+        # Updated (20/11/2024) This update avoids the player doubling their speed by pressing multiple buttons at the same time
+        if no_keys_pressed > 1 and not is_running:
+            speed = self.speed / 2
+        elif no_keys_pressed > 2 and is_running:
+            speed = self.running_speed / 2
+
+        distance = speed
 
         if direction == 'left':
 
