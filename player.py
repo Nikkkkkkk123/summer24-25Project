@@ -27,7 +27,7 @@ class Player (pygame.sprite.Sprite):
         self.x = (screenWidth - self.frameWidth) // 2
         self.y = (screenHeight - self.frameHeight) // 2 + 300
 
-        # Define a smaller hitbox
+        # Define a smaller hitbox. This is used to check for collisions with the enemy
         self.hitbox = pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 55, self.frameHeight - 40)
 
         # Direction of the player
@@ -160,7 +160,8 @@ class Player (pygame.sprite.Sprite):
                 self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
                 self.direction = 'left'
             #Move the player 
-            if self.x - distance >= 0:
+            # Pending change (29/11/2024) using self.hitbox.x to allow the player to go all the way left
+            if self.hitbox.x - distance >= 0:
                 self.x -= distance
         elif direction == 'right':
 
@@ -171,7 +172,7 @@ class Player (pygame.sprite.Sprite):
                 self.runFrames = [pygame.transform.flip(frame, True, False) for frame in self.runFrames]
                 self.direction = 'right'
             #Move the player 
-            if self.x + distance <= self.screenWidth - self.frameWidth:
+            if self.hitbox.x + distance <= self.screenWidth - self.hitbox.width:
                 self.x += distance
         elif direction == 'up':
             # Move the player up
@@ -184,7 +185,8 @@ class Player (pygame.sprite.Sprite):
                 self.y += distance
 
         # Check if player is within the screen boundaries
-        if self.x < 0:
+        # Pending change (29/11/2024). Self.hitbox.x is used allowing the player to go all the way left.
+        if self.hitbox.x < 0:
             self.x = 0
         if self.x > self.screenWidth:
             self.x = self.screenWidth
@@ -209,6 +211,8 @@ class Player (pygame.sprite.Sprite):
 
         #Updates the players location while moving
         self.rect.topleft = (self.x, self.y)
+
+        # Update the smaller hitbox
         self.hitbox = pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 55, self.frameHeight - 40)
     
     # Method for attacking
