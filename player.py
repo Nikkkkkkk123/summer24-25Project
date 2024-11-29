@@ -27,6 +27,9 @@ class Player (pygame.sprite.Sprite):
         self.x = (screenWidth - self.frameWidth) // 2
         self.y = (screenHeight - self.frameHeight) // 2 + 300
 
+        # Define a smaller hitbox
+        self.hitbox = pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 55, self.frameHeight - 40)
+
         # Direction of the player
         self.direction = 'right'
 
@@ -206,6 +209,7 @@ class Player (pygame.sprite.Sprite):
 
         #Updates the players location while moving
         self.rect.topleft = (self.x, self.y)
+        self.hitbox = pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 55, self.frameHeight - 40)
     
     # Method for attacking
     def attack(self):
@@ -278,6 +282,11 @@ class Player (pygame.sprite.Sprite):
                 self.image = self.runFrames[self.runIndex]
                 screen.blit(self.image, (self.x, self.y))
                 pygame.time.delay(10)
-
         else:
+            # Draw the outline around the player's sprite
+            outline_color = (255, 0, 0)  # Red color for the outline
+            pygame.draw.rect(screen, outline_color, self.rect, 2)  # 2 is the width of the outline
+            # Draw the hitbox (for debugging purposes)
+            hitbox_color = (0, 255, 0)  # Green color for the hitbox
+            pygame.draw.rect(screen, hitbox_color, self.hitbox, 2)  # 2 is the width of the hitbox outline
             screen.blit(self.image, (self.x, self.y))
