@@ -1,5 +1,7 @@
 import pygame
 
+from displayDamage import displayDamage
+
 class Player (pygame.sprite.Sprite):
 
     # Size of the player
@@ -17,9 +19,10 @@ class Player (pygame.sprite.Sprite):
         # All values are subject to change
         self.speed = 2
         self.running_speed = 6
-        self.health = 100
+        self.health = 2000 #was 100
         self.score = 0
         self.damage = 10 # Damage the player does to the enemy
+        self.damageTaken = 0 # Damage the player has taken
 
         # Define the size of the frame
         self.frameWidth = 128
@@ -70,12 +73,16 @@ class Player (pygame.sprite.Sprite):
         self.hurt_animation_count = 0 # Counter for the hurt animation
         self.isHurt = False # Boolean to check if the player is hurt.
 
+        # Damage text
+        self.damage_texts = pygame.sprite.Group()
+
         # Screen dimensions
         self.screenWidth = screenWidth
         self.screenHeight = screenHeight
 
         #USED TO TEST THE PLAYER MOVEMENT
         self.rect = pygame.Rect(self.x, self.y, self.frameWidth, self.frameHeight)
+
     def loadWalkingSprite(self):
         # Loads the walking sprite from the png
         self.walkingSprite = pygame.image.load('MaleSwordsMan/Walk.png')
@@ -246,10 +253,23 @@ class Player (pygame.sprite.Sprite):
         self.hurtIndex = 0
         self.health -= damage
 
-        # When ready to implement the player dying
-        # if self.health <= 0:
-        #     print("Player has died")
+        # Display the damage done to the player
+        #Create damage text
+        #damage_text = displayDamage(self.rect.centerx, self.rect.top, damage, color=(255, 0, 0), duration=10)
+        #self.damage_texts.add(damage_text)#
 
+        # When ready to implement the player dying
+        #29/11/2024 begain to implement the player dying
+        #if self.health <= 0:
+        #     self.health = 0
+        #     if self.health == 0:
+        #         print("Player has died")
+             
+    # Method to get the health of the player 30/11/2024
+    def getHealth(self):
+        return self.health
+        
+    
     #Method for jumping
     def jump(self):
         self.jump_animation_count += 1
@@ -322,4 +342,7 @@ class Player (pygame.sprite.Sprite):
             attack_colour = (0, 0, 255)
             pygame.draw.rect(screen, attack_colour,self.attack_hitbox, 2)  # 2 is the width of the hitbox outline
 
-            screen.blit(self.image, (self.x, self.y))
+            #Draw Damage Text
+            screen.blit(self.image,self.rect)
+            self.damage_texts.draw(screen)
+            self.damage_texts.update()
