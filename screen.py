@@ -181,25 +181,20 @@ while running:
         screen.blit(text, (0, 0))
         text = font.render(f'Score: {player.score}', True, (255, 255, 255))
         screen.blit(text, (0, 15))
-
+        
         # Draw the enemies
         for enemy in enemy_list:
             enemy.move()
-
-            # See if enemy hits play
-            if enemy.rect.colliderect(player.rect):
-                player.hurt(enemy.damage)
-                # if player.health <= 0:
-                #     running = False
             enemies_group.draw(screen)
-        
+
         #Check for collisons and apply damage will check if player or enemies collide with each other
         if pygame.sprite.spritecollideany(player, enemies_group):
 
             for enemy in enemies_group:
-                if player.rect.colliderect(enemy.rect):
+                # Check that the player has collided with the enemy and that the enemy can attack delay has passed
+                if player.hitbox.colliderect(enemy.rect) and enemy.can_attack():
                     player.hurt(enemy.damage)
-                    
+                    enemy.attackDelay = pygame.time.get_ticks() # Sets the time the enemy attacked
                     #display damage text
                     damage_text = displayDamage(player.rect.centerx, player.rect.top - 20, enemies.get_damage(),color=(255,0,0))
                     player.damage_texts.add(damage_text)
