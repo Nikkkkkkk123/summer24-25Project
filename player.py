@@ -33,7 +33,7 @@ class Player (pygame.sprite.Sprite):
         self.y = (screenHeight - self.frameHeight) // 2 + 300
 
         # Define a smaller hitbox. This is used to check for collisions with the enemy
-        self.hitbox = pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 55, self.frameHeight - 40)
+        self.hitbox = pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 75, self.frameHeight - 40)
 
         # Attack hitbox. This defines the area that the player can hit an enemy in it is used to check for collisions with the enemy
         self.attack_hitbox = pygame.Rect(self.x + 70, self.y + 70, self.frameWidth - 70, self.frameHeight - 80)
@@ -227,7 +227,7 @@ class Player (pygame.sprite.Sprite):
         self.rect.topleft = (self.x, self.y)
 
         # Update the smaller hitbox
-        self.hitbox = pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 55, self.frameHeight - 40)
+        self.hitbox = self.changeHitbox(self.direction)
         self.attack_hitbox = self.Get_Attack_Hitbox(self.direction)
     
     # Added 29/11/2024
@@ -240,6 +240,16 @@ class Player (pygame.sprite.Sprite):
         elif direction == 'right':
             self.attack_hitbox = pygame.Rect(self.x + 70, self.y + 70, self.frameWidth - 70, self.frameHeight - 80)
         return self.attack_hitbox
+    
+    # Method Name: changeHitbox
+    # Method Purpose: This method is used to change the hitbox of the player. This is used to ensure that the hitbox is in the correct direction
+    # Parameters: direction - The direction that the player is facing
+    # Date Added: 22024/12/02
+    def changeHitbox(self, direction):
+        if direction == 'left':
+            return pygame.Rect(self.x + 50, self.y + 40, self.frameWidth - 75, self.frameHeight - 40)
+        elif direction == 'right':
+            return pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 75, self.frameHeight - 40)
 
     # Method for attacking
     def attack(self):

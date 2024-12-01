@@ -183,9 +183,9 @@ while running:
         screen.blit(text, (0, 15))
 
         # Draw the enemies
-        for enemy in enemy_list:
-            enemy.move()
-            enemies_group.draw(screen)
+        # for enemy in enemy_list:
+        #     enemy.move()
+        #     enemies_group.draw(screen)
         
         #Check for collisons and apply damage will check if player or enemies collide with each other
         if pygame.sprite.spritecollideany(player, enemies_group):
