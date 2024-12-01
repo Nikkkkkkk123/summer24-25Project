@@ -61,6 +61,7 @@ class Enemies (pygame.sprite.Sprite):
         # time the sprite died to remove it from the group
         self.died = False
         self.timeDied = 0
+        self.attackDelay = 0 # Used to delay the attack of the enemy
 
     def move(self):
 
@@ -76,7 +77,7 @@ class Enemies (pygame.sprite.Sprite):
         if self.targeted_player:
             # Move towards the player
             direction = pygame.math.Vector2(self.target.rect.center) - pygame.math.Vector2(self.rect.center)
-            if direction.length() > 0:
+            if direction.length() > 0 and not self.rect.colliderect(self.target.hitbox):
                 direction = direction.normalize()
                 self.rect.center += direction * self.speed
         else:
@@ -120,16 +121,21 @@ class Enemies (pygame.sprite.Sprite):
             return True
         return False
 
-    # Method for when the current enemy is hit
-    def hurt (self, damage):
-        self.health -= damage
-
-        if self.health <= 0:
-            self.kill()
-
     #Method to get the damage done by enemy 29/11/2024
     def get_damage(self):
         return self.damage
+    
+    # Method: can_attack
+    # Purpose: Check if the enemy attack delay has passed
+    # Parameters: None
+    # Date Added: 2024/12/02
+    # Last Updated: 2024/12/02
+    def can_attack(self):
+        if pygame.time.get_ticks() - self.attackDelay > 500:
+            self.attackDelay = pygame.time.get_ticks()
+            return True
+        return False
+
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)

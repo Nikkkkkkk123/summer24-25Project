@@ -185,21 +185,18 @@ while running:
         # Draw the enemies
         for enemy in enemy_list:
             enemy.move()
-
-            # See if enemy hits play
-            if enemy.rect.colliderect(player.rect):
-                player.hurt(enemy.damage)
-                # if player.health <= 0:
-                #     running = False
             enemies_group.draw(screen)
         
         #Check for collisons and apply damage will check if player or enemies collide with each other
         if pygame.sprite.spritecollideany(player, enemies_group):
 
             for enemy in enemies_group:
-                if player.rect.colliderect(enemy.rect):
+                if player.hitbox.colliderect(enemy.rect) and enemy.can_attack():
                     player.hurt(enemy.damage)
                     
+                    # Set the time the last attack was to the current time
+                    enemy.attackDelay = pygame.time.get_ticks()
+
                     #display damage text
                     damage_text = displayDamage(player.rect.centerx, player.rect.top - 20, enemies.get_damage(),color=(255,0,0))
                     player.damage_texts.add(damage_text)
@@ -224,6 +221,7 @@ while running:
 
     #player health bar just an idea if we dont like it going forward we can remove it 29/11/2024
     pygame.draw.rect(screen,(0,204,0),(20,20,player.health,20))
+    pygame.draw.rect(screen, (255,0,0),(20 + player.health,20,player.health - player.damageTaken,20))
     
     pygame.display.flip()
 
