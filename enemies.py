@@ -54,6 +54,9 @@ class Enemies (pygame.sprite.Sprite):
         self.screenWidth = screenWidth
         self.screenHeight = screenHeight
 
+        #Damage text 29/11/2024
+        self.damage_text = pygame.sprite.Group()
+
         # Boolean variable to check if the enemy has died
         # time the sprite died to remove it from the group
         self.died = False
@@ -116,6 +119,17 @@ class Enemies (pygame.sprite.Sprite):
             self.timeDied = pygame.time.get_ticks()
             return True
         return False
+
+    # Method for when the current enemy is hit
+    def hurt (self, damage):
+        self.health -= damage
+
+        if self.health <= 0:
+            self.kill()
+
+    #Method to get the damage done by enemy 29/11/2024
+    def get_damage(self):
+        return self.damage
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)

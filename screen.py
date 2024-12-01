@@ -1,6 +1,7 @@
 import pygame
 from player import Player
 from enemies import Enemies
+from displayDamage import displayDamage
 import random
 
 # Initialize the pygame
@@ -34,6 +35,7 @@ background = pygame.transform.scale(background, (screen_width, screen_height))
 # Create a player object. Player(characterused, screenWidth, screenHeight)
 player = Player('MaleSwordsMan', screen_width, screen_height)
 enemies = Enemies( 100, 100, player, screen_width, screen_height)
+
 
 # Boolean variable to control the main loop
 running = True
@@ -106,8 +108,7 @@ def draw_menu(screen):
     return menu_click_box, char_select_click_box,setting_click_box, close_click_box
 
 #List of Enemies that can be spawned
-enemy_list = [Enemies(random.randint(0, screen_width), random.randint(0, screen_height), player, screen_width, screen_height) for _ in range(5)]
-
+enemy_list = [Enemies(random.randint(0, screen_width), random.randint(600, screen_height), player, screen_width, screen_height) for _ in range(5)]
 
 # Add the player to the all_entities group
 all_entities.add(player)
@@ -191,6 +192,19 @@ while running:
                 # if player.health <= 0:
                 #     running = False
             enemies_group.draw(screen)
+        
+        #Check for collisons and apply damage will check if player or enemies collide with each other
+        if pygame.sprite.spritecollideany(player, enemies_group):
+
+            for enemy in enemies_group:
+                if player.rect.colliderect(enemy.rect):
+                    player.hurt(enemy.damage)
+                    
+                    #display damage text
+                    damage_text = displayDamage(player.rect.centerx, player.rect.top - 20, enemies.get_damage(),color=(255,0,0))
+                    player.damage_texts.add(damage_text)
+                    player.damage_texts.update()
+                
     else:
         menu_click_box, char_select_click_box,settings_click_box, close_click_box = draw_menu(screen)
 
@@ -208,6 +222,9 @@ while running:
     postion_text = font.render(f'Player Position: {player.rect.topleft}', True, (255, 255, 255))
     screen.blit(postion_text, (0, 30))
 
+    #player health bar just an idea if we dont like it going forward we can remove it 29/11/2024
+    pygame.draw.rect(screen,(0,204,0),(20,20,player.health,20))
+    
     pygame.display.flip()
 
 pygame.quit()
