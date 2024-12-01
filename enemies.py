@@ -76,7 +76,7 @@ class Enemies (pygame.sprite.Sprite):
         if self.targeted_player:
             # Move towards the player
             direction = pygame.math.Vector2(self.target.rect.center) - pygame.math.Vector2(self.rect.center)
-            if direction.length() > 0:
+            if direction.length() > 0 and not self.rect.colliderect(self.target.hitbox):
                 direction = direction.normalize()
                 self.rect.center += direction * self.speed
         else:

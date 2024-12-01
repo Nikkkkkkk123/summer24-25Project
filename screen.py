@@ -224,6 +224,7 @@ while running:
 
     #player health bar just an idea if we dont like it going forward we can remove it 29/11/2024
     pygame.draw.rect(screen,(0,204,0),(20,20,player.health,20))
+    pygame.draw.rect(screen, (255,0,0),(20 + player.health,20,player.health - player.damageTaken,20))
     
     pygame.display.flip()
 
