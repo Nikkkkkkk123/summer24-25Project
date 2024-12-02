@@ -310,6 +310,20 @@ class Player (pygame.sprite.Sprite):
     # Date Modified: 2024/12/03
     def store_item(self, item):
         self.inventory.add_item(item)
+
+    # Method Name: use_item
+    # Method Purpose: This method is used to use an item from the player's inventory
+    # Parameters: item - The item that is being used
+    # Date Added: 2024/12/03
+    # Date Modified: 2024/12/03
+    def use_item(self, item):
+        if self.inventory.dictionary_value(item) != None:
+            item_name, item_count = self.inventory.dictionary_value(item)
+            if item_name == "heal":
+                self.heal(10)
+                self.inventory.use_item(item_name)
+            # Use the item
+            # Remove the item from the inventory
         
    # Draw the player on the screen
     def draw (self, screen):
