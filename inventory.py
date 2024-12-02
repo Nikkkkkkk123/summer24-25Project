@@ -71,7 +71,6 @@ class Inventory:
 
         # Just basic error handling. Currently if this method is called it should always be in range
         if i < len(itemList):
-            print(itemList[i])
             return itemList[i]
         else:
             return None
