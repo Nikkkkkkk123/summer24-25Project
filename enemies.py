@@ -1,6 +1,8 @@
 import pygame
 import random
 
+from drop import Drop
+
 # Inheritance from the pygame.sprite.Sprite class. The sprite clas allows for the creation of sprite objects
 class Enemies (pygame.sprite.Sprite):
     # Enemies base level zombie(need good name) wonders, slow movers
@@ -18,7 +20,7 @@ class Enemies (pygame.sprite.Sprite):
     # drop_type: need to implement loot system
     # AI: wander
 
-    def __init__(self, x, y, player, screenWidth, screenHeight):
+    def __init__(self, x, y, player, screenWidth, screenHeight, drop):
         super().__init__()
         self.health = 100
         self.damage = 10
@@ -26,7 +28,8 @@ class Enemies (pygame.sprite.Sprite):
         self.attack_speed = 1
         self.attack_range = 1
         self.attack_type = "melee"
-        self.drop = None  # create loot system later
+        self.drop = drop  # create loot system later
+        self.dropItem = drop.obtainItem()
         self.drop_rate = None  # create loot system later
         self.drop_amount = None  # create loot system later
         self.drop_type = None  # create loot system later

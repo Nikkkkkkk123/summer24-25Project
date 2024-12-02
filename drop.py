@@ -1,8 +1,13 @@
+# Date Created: 2/12/2024
+# Date Modified: 2/12/2024
+# Description: This file contains the Drop class which is used to create a drop object that can be used to heal the player.
+
 import pygame
 import random
 
 class Drop(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, x = 0, y = 0, item = None):
+        super().__init__()
         # Load the sprites
         self.frameWidth = 32
         self.frameHeight = 32
@@ -10,15 +15,63 @@ class Drop(pygame.sprite.Sprite):
         self.healImage = pygame.image.load("Drops/heal.png")
         self.healImage = pygame.transform.scale(self.healImage, (self.frameWidth, self.frameHeight))
         self.rect = self.healImage.get_rect()
+
+        self.item = None
+        self.x = 0
+        self.y = 0
+
+        # This is for when a new item is being created as it is being displayed in the world to the user
+        if item != None:
+            self.item = item
+            self.x = x
+            self.y = y
+            self.rect.center = (self.x, self.y)
     
+    # Method Name: obtainItem
+    # Description: This method is used to determine whether or not a drop will be created.
+    # Parameter: None
+    # Date Created: 2/12/2024  
+    # Date Modified: 2/12/2024
     def obtainItem(self):
-        hasItem = random.choice([True, False])
+        hasItem = random.choice([True])
 
         if hasItem:
-            item = random.choice([self.healImage])
-            return "Item"
+            self.item = "heal"
+            return "heal"
         else:
             return None
+    
+    # Method Name: dropItem
+    # Description: This method is used to drop an item in the world.
+    # Parameter: x, y
+    # Date Created: 2/12/2024
+    # Date Modified: 2/12/2024
+    def dropItem(self, x, y):
+        if self.item == "heal":
+            self.x = x
+            self.y = y
+            self.rect.center = (self.x, self.y)
+            self.item = "heal"
+
+    # Method Name: useItem
+    # Description: This method is used to use the item that was dropped.
+    # Parameter: player
+    # Date Created: 2/12/2024
+    # Date Modified: 2/12/2024
+    def useItem (self, player):
+        if self.item == "heal":
+            player.heal(10)
+            self.item = None
+            self.kill()
+
+    # Method Name: draw
+    # Description: This method is used to draw the item that was dropped.
+    # Parameter: screen, item
+    # Date Created: 2/12/2024
+    # Date Modified: 2/12/2024
+    def draw(self, screen, item):
+        if item == "heal":
+            screen.blit(self.healImage, self.rect)
     
 
 

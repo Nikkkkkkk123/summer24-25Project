@@ -2,6 +2,7 @@ import pygame
 from player import Player
 from enemies import Enemies
 from displayDamage import displayDamage
+from drop import Drop
 import random
 
 # Initialize the pygame
@@ -14,6 +15,7 @@ pointer_cursor = pygame.SYSTEM_CURSOR_HAND
 # Create sprite groups to sort the entities of characters
 all_entities = pygame.sprite.Group()
 enemies_group = pygame.sprite.Group() # Group for the enemy sprites
+items_group = pygame.sprite.Group() # Group for the items   
 enemy_list = pygame.sprite.OrderedUpdates()  # Group which keep order
 
 # Initialise the font module
@@ -34,7 +36,8 @@ background = pygame.transform.scale(background, (screen_width, screen_height))
 
 # Create a player object. Player(characterused, screenWidth, screenHeight)
 player = Player('MaleSwordsMan', screen_width, screen_height)
-enemies = Enemies( 100, 100, player, screen_width, screen_height)
+drop = Drop()
+enemies = Enemies( 100, 100, player, screen_width, screen_height, drop)
 
 
 # Boolean variable to control the main loop
@@ -125,7 +128,7 @@ def draw_health_bar(x, y, health, max_health):
     pygame.draw.rect(screen, GREEN, (x, y, health, 20))
 
 #List of Enemies that can be spawned
-enemy_list = [Enemies(random.randint(0, screen_width), random.randint(600, screen_height), player, screen_width, screen_height) for _ in range(5)]
+enemy_list = [Enemies(random.randint(0, screen_width), random.randint(600, screen_height), player, screen_width, screen_height, drop) for _ in range(5)]
 
 # Add the player to the all_entities group
 all_entities.add(player)
@@ -200,9 +203,16 @@ while running:
         screen.blit(text, (0, 15))
 
         # Draw the enemies
-        for enemy in enemy_list:
+        for enemy in enemies_group:
             enemy.move()
             enemies_group.draw(screen)
+            if not enemies_group.has(enemy) and enemy.dropItem != None:
+                new_drop = Drop(enemy.rect.centerx, enemy.rect.centery, enemy.dropItem)
+                items_group.add(new_drop)
+        
+        # Draw the items
+        for drop in items_group:
+            drop.draw(screen, drop.item)
         
         #Check for collisons and apply damage will check if player or enemies collide with each other
         if pygame.sprite.spritecollideany(player, enemies_group):
@@ -218,6 +228,13 @@ while running:
                     damage_text = displayDamage(player.rect.centerx, player.rect.top - 20, enemies.get_damage(),color=(255,0,0))
                     player.damage_texts.add(damage_text)
                     player.damage_texts.update()
+        
+        # Use the item. Currently if sprite runs over it
+        # If the player collides with the items sprite, the player will use the item
+        if pygame.sprite.spritecollideany(player, items_group):
+            for drop in items_group:
+                if player.hitbox.colliderect(drop.rect):
+                    drop.useItem(player)
                 
     else:
         menu_click_box, char_select_click_box,settings_click_box, close_click_box = draw_menu(screen)

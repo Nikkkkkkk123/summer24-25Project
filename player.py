@@ -288,6 +288,15 @@ class Player (pygame.sprite.Sprite):
             self.jumpIndex = (self.jumpIndex + 1) % self.numJumpFrames
             self.jump_image = self.jumpFrames[self.jumpIndex]
 
+    # Method Name: heal
+    # Method Purpose: This method is used to heal the player
+    # Parameters: healAmount - The amount that the player is healed by
+    # Date Added: 2024/12/02
+    def heal(self, healAmount):
+        self.health += healAmount
+        if self.health > 500:
+            self.health = 500
+
    # Draw the player on the screen
     def draw (self, screen):
         # Check the boolean to see if the attacking animation is meant to be getting used
