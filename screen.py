@@ -268,15 +268,15 @@ while running:
             pygame.mouse.set_cursor(pointer_cursor)
         elif pygame.mouse.get_cursor() != default_cursor:
             pygame.mouse.set_cursor(default_cursor)
+    
+    # Player health bar (x, y, health, max_health)
+    draw_health_bar(10,20, player.health, max_health)
 
     # Show the postion of the player on the screen for debugging purposes
     postion_text = font.render(f'Player Position: {player.rect.topleft}', True, (255, 255, 255))
     screen.blit(postion_text, (10, 65))
     inventory.draw_inventory(screen)
 
-    # Player health bar (x, y, health, max_health)
-    draw_health_bar(10,20, player.health, max_health)
-    
     pygame.display.flip()
 
 pygame.quit()
