@@ -200,6 +200,8 @@ while running:
         if keys[pygame.K_SPACE]:
             player.isRunning = False
             player.jump()
+        if keys[pygame.K_1]:
+            player.use_item(0)
 
         screen.blit(background, (0, 0))
         player.draw(screen)

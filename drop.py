@@ -66,6 +66,14 @@ class Drop(pygame.sprite.Sprite):
             player.heal(10)
             self.item = None
             self.kill()
+            
+    # Method Name: item_image
+    # Description: This method is used to get the image of the item that was dropped.
+    # Parameter: itemName
+    # Date Created: 3/12/2024
+    # Date Modified: 3/12/2024
+    def item_image(itemName):
+        return "Drops/"+itemName+".png"
 
     # Method Name: draw
     # Description: This method is used to draw the item that was dropped.
