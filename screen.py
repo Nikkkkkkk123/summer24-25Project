@@ -167,6 +167,16 @@ while running:
                     print("Settings button clicked")
                 elif close_click_box.collidepoint(mouse_x - (screen_width // 2 - 100), mouse_y - (screen_height // 2 - 100)):
                     running = False
+
+            # Added 3/12/2024. This is to check if the mouse button input was to pick up an item.
+            # This avoids the player performing the attack animation when trying to pick up an item.
+            elif any(item.collidepoint(mouse_x, mouse_y) for item in items):
+                for drop in items_group:
+                    if drop.rect.collidepoint(mouse_x, mouse_y):
+                        #drop.useItem(player)
+                        player.store_item(drop)
+                        items.remove(pygame.Rect(drop.x, drop.y, drop.frameWidth, drop.frameHeight))
+                        items_group.remove(drop)
             else:
                 player.attack()
 
@@ -241,19 +251,10 @@ while running:
                     player.damage_texts.add(damage_text)
                     player.damage_texts.update()
         
-        # Use the item. Currently if sprite runs over it
-        # If the player collides with the items sprite, the player will use the item
-        # Updated 3/12/2024. Changed to start implymenting the use of the item with the mouse. This is to start preparing for the inventory system.
+        # Updated 3/12/2024. If the mouse is hovering an item to pick it up the cursor is changed to a pointer.
         if any(item.collidepoint(mouse_x, mouse_y) for item in items):
             pygame.mouse.set_cursor(pointer_cursor)
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                for drop in items_group:
-                    if drop.rect.collidepoint(mouse_x, mouse_y):
-                        #drop.useItem(player)
-                        player.store_item(drop)
-                        items.remove(pygame.Rect(drop.x, drop.y, drop.frameWidth, drop.frameHeight))
-                        items_group.remove(drop)
-        else:
+        elif pygame.mouse.get_cursor() != default_cursor:
             pygame.mouse.set_cursor(default_cursor)
                 
     else:
