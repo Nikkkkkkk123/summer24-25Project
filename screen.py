@@ -198,21 +198,21 @@ while running:
         screen.blit(background, (0, 0))
         player.draw(screen)
         text = font.render(f'Health: {player.health}', True, (255, 255, 255))
-        screen.blit(text, (0, 0))
+        screen.blit(text, (10, 0))
         text = font.render(f'Score: {player.score}', True, (255, 255, 255))
-        screen.blit(text, (0, 15))
+        screen.blit(text, (10, 45))
 
         # Draw the enemies
         for enemy in enemies_group:
             enemy.move()
             enemies_group.draw(screen)
             if not enemies_group.has(enemy) and enemy.dropItem != None:
-                new_drop = Drop(enemy.rect.centerx, enemy.rect.centery, enemy.dropItem)
+                new_drop = Drop(enemy.rect.centerx, enemy.rect.centery, enemy.dropItem, pygame.time.get_ticks())
                 items_group.add(new_drop)
         
         # Draw the items
         for drop in items_group:
-            drop.draw(screen, drop.item)
+            drop.draw(screen, drop.item, pygame.time.get_ticks())
         
         #Check for collisons and apply damage will check if player or enemies collide with each other
         if pygame.sprite.spritecollideany(player, enemies_group):
@@ -251,10 +251,10 @@ while running:
 
     # Show the postion of the player on the screen for debugging purposes
     postion_text = font.render(f'Player Position: {player.rect.topleft}', True, (255, 255, 255))
-    screen.blit(postion_text, (0, 30))
+    screen.blit(postion_text, (10, 65))
 
-    # Player health bar
-    draw_health_bar(20,20, player.health, max_health)
+    # Player health bar (x, y, health, max_health)
+    draw_health_bar(10,20, player.health, max_health)
     
     pygame.display.flip()
 

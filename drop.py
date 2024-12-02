@@ -6,7 +6,7 @@ import pygame
 import random
 
 class Drop(pygame.sprite.Sprite):
-    def __init__(self, x = 0, y = 0, item = None):
+    def __init__(self, x = 0, y = 0, item = None, time = 0):
         super().__init__()
         # Load the sprites
         self.frameWidth = 32
@@ -19,6 +19,7 @@ class Drop(pygame.sprite.Sprite):
         self.item = None
         self.x = 0
         self.y = 0
+        self.timeCreated = 0
 
         # This is for when a new item is being created as it is being displayed in the world to the user
         if item != None:
@@ -26,6 +27,7 @@ class Drop(pygame.sprite.Sprite):
             self.x = x
             self.y = y
             self.rect.center = (self.x, self.y)
+            self.timeCreated = time
     
     # Method Name: obtainItem
     # Description: This method is used to determine whether or not a drop will be created.
@@ -33,7 +35,8 @@ class Drop(pygame.sprite.Sprite):
     # Date Created: 2/12/2024  
     # Date Modified: 2/12/2024
     def obtainItem(self):
-        hasItem = random.choice([True])
+        # Currently 50% chance of an item being dropped
+        hasItem = random.choice([True, False])
 
         if hasItem:
             self.item = "heal"
@@ -69,7 +72,11 @@ class Drop(pygame.sprite.Sprite):
     # Parameter: screen, item
     # Date Created: 2/12/2024
     # Date Modified: 2/12/2024
-    def draw(self, screen, item):
+    def draw(self, screen, item, time):
+        # If the item has been on screen for longer than the period of time it will despawn.
+        if (time - self.timeCreated) > 3000:
+            self.kill()
+            return
         if item == "heal":
             screen.blit(self.healImage, self.rect)
     
