@@ -19,7 +19,7 @@ class Player (pygame.sprite.Sprite):
         # All values are subject to change
         self.speed = 2
         self.running_speed = 6
-        self.health = 2000 #was 100
+        self.health = 500 #was 100
         self.score = 0
         self.damage = 10 # Damage the player does to the enemy
         self.damageTaken = 0 # Damage the player has taken

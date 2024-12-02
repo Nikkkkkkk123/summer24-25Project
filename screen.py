@@ -45,6 +45,15 @@ is_running = False # This is used to determine if the player is running or not. 
 # Store the boxes. This allows for it to only be drawn once as the menu is being called
 menu_click_box, char_select_click_box, settings_click_box, close_click_box = None, None, None, None
 
+# Define the colors
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+       
+# Define player health
+bar_width = 20
+max_health = player.health
+
+
 def resize_screen(width, height):
     global screen, player, background
     screen = pygame.display.set_mode((width, height), pygame.FULLSCREEN)
@@ -106,6 +115,14 @@ def draw_menu(screen):
     close_click_box = close_text_rect.inflate(15, 5)
 
     return menu_click_box, char_select_click_box,setting_click_box, close_click_box
+
+# Draw the health bar of the player
+def draw_health_bar(x, y, health, max_health):
+    """Draws the health bar with a red background and a green foreground."""
+    # Red background (initial health)
+    pygame.draw.rect(screen, RED, (x, y,max_health, 20))
+    # Green foreground (current health)
+    pygame.draw.rect(screen, GREEN, (x, y, health, 20))
 
 #List of Enemies that can be spawned
 enemy_list = [Enemies(random.randint(0, screen_width), random.randint(600, screen_height), player, screen_width, screen_height) for _ in range(5)]
@@ -219,9 +236,8 @@ while running:
     postion_text = font.render(f'Player Position: {player.rect.topleft}', True, (255, 255, 255))
     screen.blit(postion_text, (0, 30))
 
-    #player health bar just an idea if we dont like it going forward we can remove it 29/11/2024
-    pygame.draw.rect(screen,(0,204,0),(20,20,player.health,20))
-    pygame.draw.rect(screen, (255,0,0),(20 + player.health,20,player.health - player.damageTaken,20))
+    # Player health bar
+    draw_health_bar(20,20, player.health, max_health)
     
     pygame.display.flip()
 
