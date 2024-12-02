@@ -134,7 +134,7 @@ class Enemies (pygame.sprite.Sprite):
     # Date Added: 2024/12/02
     # Last Updated: 2024/12/02
     def can_attack(self):
-        if pygame.time.get_ticks() - self.attackDelay > 500:
+        if pygame.time.get_ticks() - self.attackDelay > 500 and not self.died:
             self.attackDelay = pygame.time.get_ticks()
             return True
         return False
