@@ -36,7 +36,7 @@ class Drop(pygame.sprite.Sprite):
     # Date Modified: 2/12/2024
     def obtainItem(self):
         # Currently 50% chance of an item being dropped
-        hasItem = random.choice([True, False])
+        hasItem = random.choice([True])
 
         if hasItem:
             self.item = "heal"
