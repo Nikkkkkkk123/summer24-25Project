@@ -20,6 +20,7 @@ class Player (pygame.sprite.Sprite):
         self.speed = 2
         self.running_speed = 6
         self.health = 500 #was 100
+        self.maxHealth = 500 # This allows for the player to heal back to full health
         self.score = 0
         self.damage = 10 # Damage the player does to the enemy
         self.damageTaken = 0 # Damage the player has taken
@@ -293,9 +294,10 @@ class Player (pygame.sprite.Sprite):
     # Parameters: healAmount - The amount that the player is healed by
     # Date Added: 2024/12/02
     def heal(self, healAmount):
-        self.health += healAmount
-        if self.health > 500:
-            self.health = 500
+        if self.health + healAmount >= self.maxHealth:
+            self.health = self.maxHealth
+        else:
+            self.health += healAmount
 
    # Draw the player on the screen
     def draw (self, screen):
