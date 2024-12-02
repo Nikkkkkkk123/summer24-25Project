@@ -133,6 +133,9 @@ enemy_list = [Enemies(random.randint(0, screen_width), random.randint(600, scree
 # Add the player to the all_entities group
 all_entities.add(player)
 
+# Array to store the items that are dropped by the  (x, y, width, height)
+items = []
+
 # Add the enemies to the enemies_group and all_entities group
 for enemy in enemy_list:
     enemies_group.add([enemy])
@@ -140,6 +143,7 @@ for enemy in enemy_list:
 while running:
     # GAME CLOCK 
     game_time = pygame.time.get_ticks() / 1000
+    mouse_x, mouse_y = pygame.mouse.get_pos()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -208,11 +212,14 @@ while running:
             enemies_group.draw(screen)
             if not enemies_group.has(enemy) and enemy.dropItem != None:
                 new_drop = Drop(enemy.rect.centerx, enemy.rect.centery, enemy.dropItem, pygame.time.get_ticks())
+                items.append(pygame.Rect(new_drop.x, new_drop.y, new_drop.frameWidth, new_drop.frameHeight))
                 items_group.add(new_drop)
         
         # Draw the items
         for drop in items_group:
             drop.draw(screen, drop.item, pygame.time.get_ticks())
+            if drop not in items_group:
+                items.remove(pygame.Rect(drop.x, drop.y, drop.frameWidth, drop.frameHeight))
         
         #Check for collisons and apply damage will check if player or enemies collide with each other
         if pygame.sprite.spritecollideany(player, enemies_group):
@@ -231,10 +238,17 @@ while running:
         
         # Use the item. Currently if sprite runs over it
         # If the player collides with the items sprite, the player will use the item
-        if pygame.sprite.spritecollideany(player, items_group):
-            for drop in items_group:
-                if player.hitbox.colliderect(drop.rect):
-                    drop.useItem(player)
+        # Updated 3/12/2024. Changed to start implymenting the use of the item with the mouse. This is to start preparing for the inventory system.
+        if any(item.collidepoint(mouse_x, mouse_y) for item in items):
+            pygame.mouse.set_cursor(pointer_cursor)
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                for drop in items_group:
+                    if drop.rect.collidepoint(mouse_x, mouse_y):
+                        drop.useItem(player)
+                        items.remove(pygame.Rect(drop.x, drop.y, drop.frameWidth, drop.frameHeight))
+                        items_group.remove(drop)
+        else:
+            pygame.mouse.set_cursor(default_cursor)
                 
     else:
         menu_click_box, char_select_click_box,settings_click_box, close_click_box = draw_menu(screen)
@@ -243,7 +257,6 @@ while running:
     # If it is than change the cursor to a pointer, otherwise if the curser is not the default cursor
     # and is not hovering a button than change it back to the default cursor.
     if menu_active:
-        mouse_x, mouse_y = pygame.mouse.get_pos()
         if any(box.collidepoint(mouse_x - (screen_width // 2 - 100), mouse_y - (screen_height // 2 - 100)) for box in [menu_click_box, char_select_click_box, settings_click_box, close_click_box]):
             pygame.mouse.set_cursor(pointer_cursor)
         elif pygame.mouse.get_cursor() != default_cursor:
