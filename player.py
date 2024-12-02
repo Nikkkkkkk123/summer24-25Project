@@ -267,7 +267,7 @@ class Player (pygame.sprite.Sprite):
         # Display the damage done to the player
         #Create damage text
         #damage_text = displayDamage(self.rect.centerx, self.rect.top, damage, color=(255, 0, 0), duration=10)
-        #self.damage_texts.add(damage_text)#
+        #self.damage_texts.add(damage_text)
 
         # When ready to implement the player dying
         #29/11/2024 begain to implement the player dying
