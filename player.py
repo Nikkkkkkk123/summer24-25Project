@@ -1,6 +1,7 @@
 import pygame
 
 from displayDamage import displayDamage
+from inventory import Inventory
 
 class Player (pygame.sprite.Sprite):
 
@@ -13,7 +14,7 @@ class Player (pygame.sprite.Sprite):
     # Adding an attack hit box (2024/11/29) This could attempt to resolve the issue of hitting zombies above. Maybe this should be weapon specific?
 
     # Constructor
-    def __init__(self, sprite, screenWidth, screenHeight):
+    def __init__(self, sprite, screenWidth, screenHeight, inventory):
         super().__init__()
         
         # All values are subject to change
@@ -83,6 +84,9 @@ class Player (pygame.sprite.Sprite):
 
         #USED TO TEST THE PLAYER MOVEMENT
         self.rect = pygame.Rect(self.x, self.y, self.frameWidth, self.frameHeight)
+
+        # The players inventory
+        self.inventory = inventory
 
     def loadWalkingSprite(self):
         # Loads the walking sprite from the png
@@ -299,6 +303,14 @@ class Player (pygame.sprite.Sprite):
         else:
             self.health += healAmount
 
+    # Method Name: store_item
+    # Method Purpose: This method is used to store an item in the player's inventory
+    # Parameters: item - The item that is being stored
+    # Date Added: 2024/12/03
+    # Date Modified: 2024/12/03
+    def store_item(self, item):
+        self.inventory.add_item(item)
+        
    # Draw the player on the screen
     def draw (self, screen):
         # Check the boolean to see if the attacking animation is meant to be getting used

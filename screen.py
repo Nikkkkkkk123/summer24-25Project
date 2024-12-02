@@ -3,6 +3,7 @@ from player import Player
 from enemies import Enemies
 from displayDamage import displayDamage
 from drop import Drop
+from inventory import Inventory
 import random
 
 # Initialize the pygame
@@ -35,7 +36,8 @@ background = pygame.image.load('background.png')
 background = pygame.transform.scale(background, (screen_width, screen_height))
 
 # Create a player object. Player(characterused, screenWidth, screenHeight)
-player = Player('MaleSwordsMan', screen_width, screen_height)
+inventory = Inventory()
+player = Player('MaleSwordsMan', screen_width, screen_height, inventory)
 drop = Drop()
 enemies = Enemies( 100, 100, player, screen_width, screen_height, drop)
 
@@ -216,6 +218,7 @@ while running:
                 items_group.add(new_drop)
         
         # Draw the items
+        # Updated 3/12/2024. Altered to remove the item from the items array if it has desparwned
         for drop in items_group:
             drop.draw(screen, drop.item, pygame.time.get_ticks())
             if drop not in items_group:
@@ -244,7 +247,8 @@ while running:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 for drop in items_group:
                     if drop.rect.collidepoint(mouse_x, mouse_y):
-                        drop.useItem(player)
+                        #drop.useItem(player)
+                        player.store_item(drop)
                         items.remove(pygame.Rect(drop.x, drop.y, drop.frameWidth, drop.frameHeight))
                         items_group.remove(drop)
         else:
@@ -265,6 +269,7 @@ while running:
     # Show the postion of the player on the screen for debugging purposes
     postion_text = font.render(f'Player Position: {player.rect.topleft}', True, (255, 255, 255))
     screen.blit(postion_text, (10, 65))
+    inventory.draw_inventory(screen)
 
     # Player health bar (x, y, health, max_health)
     draw_health_bar(10,20, player.health, max_health)
