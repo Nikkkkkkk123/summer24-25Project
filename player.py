@@ -19,7 +19,8 @@ class Player (pygame.sprite.Sprite):
         # All values are subject to change
         self.speed = 2
         self.running_speed = 6
-        self.health = 2000 #was 100
+        self.health = 500 #was 100
+        self.maxHealth = 500 # This allows for the player to heal back to full health
         self.score = 0
         self.damage = 10 # Damage the player does to the enemy
         self.damageTaken = 0 # Damage the player has taken
@@ -33,7 +34,7 @@ class Player (pygame.sprite.Sprite):
         self.y = (screenHeight - self.frameHeight) // 2 + 300
 
         # Define a smaller hitbox. This is used to check for collisions with the enemy
-        self.hitbox = pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 55, self.frameHeight - 40)
+        self.hitbox = pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 75, self.frameHeight - 40)
 
         # Attack hitbox. This defines the area that the player can hit an enemy in it is used to check for collisions with the enemy
         self.attack_hitbox = pygame.Rect(self.x + 70, self.y + 70, self.frameWidth - 70, self.frameHeight - 80)
@@ -227,7 +228,7 @@ class Player (pygame.sprite.Sprite):
         self.rect.topleft = (self.x, self.y)
 
         # Update the smaller hitbox
-        self.hitbox = pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 55, self.frameHeight - 40)
+        self.hitbox = self.changeHitbox(self.direction)
         self.attack_hitbox = self.Get_Attack_Hitbox(self.direction)
     
     # Added 29/11/2024
@@ -240,6 +241,16 @@ class Player (pygame.sprite.Sprite):
         elif direction == 'right':
             self.attack_hitbox = pygame.Rect(self.x + 70, self.y + 70, self.frameWidth - 70, self.frameHeight - 80)
         return self.attack_hitbox
+    
+    # Method Name: changeHitbox
+    # Method Purpose: This method is used to change the hitbox of the player. This is used to ensure that the hitbox is in the correct direction
+    # Parameters: direction - The direction that the player is facing
+    # Date Added: 22024/12/02
+    def changeHitbox(self, direction):
+        if direction == 'left':
+            return pygame.Rect(self.x + 50, self.y + 40, self.frameWidth - 75, self.frameHeight - 40)
+        elif direction == 'right':
+            return pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 75, self.frameHeight - 40)
 
     # Method for attacking
     def attack(self):
@@ -256,7 +267,7 @@ class Player (pygame.sprite.Sprite):
         # Display the damage done to the player
         #Create damage text
         #damage_text = displayDamage(self.rect.centerx, self.rect.top, damage, color=(255, 0, 0), duration=10)
-        #self.damage_texts.add(damage_text)#
+        #self.damage_texts.add(damage_text)
 
         # When ready to implement the player dying
         #29/11/2024 begain to implement the player dying
@@ -277,6 +288,16 @@ class Player (pygame.sprite.Sprite):
             self.jump_animation_count = 0
             self.jumpIndex = (self.jumpIndex + 1) % self.numJumpFrames
             self.jump_image = self.jumpFrames[self.jumpIndex]
+
+    # Method Name: heal
+    # Method Purpose: This method is used to heal the player
+    # Parameters: healAmount - The amount that the player is healed by
+    # Date Added: 2024/12/02
+    def heal(self, healAmount):
+        if self.health + healAmount >= self.maxHealth:
+            self.health = self.maxHealth
+        else:
+            self.health += healAmount
 
    # Draw the player on the screen
     def draw (self, screen):

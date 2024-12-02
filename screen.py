@@ -2,6 +2,7 @@ import pygame
 from player import Player
 from enemies import Enemies
 from displayDamage import displayDamage
+from drop import Drop
 import random
 
 # Initialize the pygame
@@ -14,6 +15,7 @@ pointer_cursor = pygame.SYSTEM_CURSOR_HAND
 # Create sprite groups to sort the entities of characters
 all_entities = pygame.sprite.Group()
 enemies_group = pygame.sprite.Group() # Group for the enemy sprites
+items_group = pygame.sprite.Group() # Group for the items   
 enemy_list = pygame.sprite.OrderedUpdates()  # Group which keep order
 
 # Initialise the font module
@@ -34,7 +36,8 @@ background = pygame.transform.scale(background, (screen_width, screen_height))
 
 # Create a player object. Player(characterused, screenWidth, screenHeight)
 player = Player('MaleSwordsMan', screen_width, screen_height)
-enemies = Enemies( 100, 100, player, screen_width, screen_height)
+drop = Drop()
+enemies = Enemies( 100, 100, player, screen_width, screen_height, drop)
 
 
 # Boolean variable to control the main loop
@@ -44,6 +47,15 @@ is_running = False # This is used to determine if the player is running or not. 
 
 # Store the boxes. This allows for it to only be drawn once as the menu is being called
 menu_click_box, char_select_click_box, settings_click_box, close_click_box = None, None, None, None
+
+# Define the colors
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+       
+# Define player health
+bar_width = 20
+max_health = player.health
+
 
 def resize_screen(width, height):
     global screen, player, background
@@ -107,8 +119,16 @@ def draw_menu(screen):
 
     return menu_click_box, char_select_click_box,setting_click_box, close_click_box
 
+# Draw the health bar of the player
+def draw_health_bar(x, y, health, max_health):
+    """Draws the health bar with a red background and a green foreground."""
+    # Red background (initial health)
+    pygame.draw.rect(screen, RED, (x, y,max_health, 20))
+    # Green foreground (current health)
+    pygame.draw.rect(screen, GREEN, (x, y, health, 20))
+
 #List of Enemies that can be spawned
-enemy_list = [Enemies(random.randint(0, screen_width), random.randint(600, screen_height), player, screen_width, screen_height) for _ in range(5)]
+enemy_list = [Enemies(random.randint(0, screen_width), random.randint(600, screen_height), player, screen_width, screen_height, drop) for _ in range(5)]
 
 # Add the player to the all_entities group
 all_entities.add(player)
@@ -178,14 +198,21 @@ while running:
         screen.blit(background, (0, 0))
         player.draw(screen)
         text = font.render(f'Health: {player.health}', True, (255, 255, 255))
-        screen.blit(text, (0, 0))
+        screen.blit(text, (10, 0))
         text = font.render(f'Score: {player.score}', True, (255, 255, 255))
-        screen.blit(text, (0, 15))
+        screen.blit(text, (10, 45))
 
         # Draw the enemies
-        for enemy in enemy_list:
+        for enemy in enemies_group:
             enemy.move()
             enemies_group.draw(screen)
+            if not enemies_group.has(enemy) and enemy.dropItem != None:
+                new_drop = Drop(enemy.rect.centerx, enemy.rect.centery, enemy.dropItem, pygame.time.get_ticks())
+                items_group.add(new_drop)
+        
+        # Draw the items
+        for drop in items_group:
+            drop.draw(screen, drop.item, pygame.time.get_ticks())
         
         #Check for collisons and apply damage will check if player or enemies collide with each other
         if pygame.sprite.spritecollideany(player, enemies_group):
@@ -201,6 +228,13 @@ while running:
                     damage_text = displayDamage(player.rect.centerx, player.rect.top - 20, enemies.get_damage(),color=(255,0,0))
                     player.damage_texts.add(damage_text)
                     player.damage_texts.update()
+        
+        # Use the item. Currently if sprite runs over it
+        # If the player collides with the items sprite, the player will use the item
+        if pygame.sprite.spritecollideany(player, items_group):
+            for drop in items_group:
+                if player.hitbox.colliderect(drop.rect):
+                    drop.useItem(player)
                 
     else:
         menu_click_box, char_select_click_box,settings_click_box, close_click_box = draw_menu(screen)
@@ -217,11 +251,10 @@ while running:
 
     # Show the postion of the player on the screen for debugging purposes
     postion_text = font.render(f'Player Position: {player.rect.topleft}', True, (255, 255, 255))
-    screen.blit(postion_text, (0, 30))
+    screen.blit(postion_text, (10, 65))
 
-    #player health bar just an idea if we dont like it going forward we can remove it 29/11/2024
-    pygame.draw.rect(screen,(0,204,0),(20,20,player.health,20))
-    pygame.draw.rect(screen, (255,0,0),(20 + player.health,20,player.health - player.damageTaken,20))
+    # Player health bar (x, y, health, max_health)
+    draw_health_bar(10,20, player.health, max_health)
     
     pygame.display.flip()
 
