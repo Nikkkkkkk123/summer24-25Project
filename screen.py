@@ -40,7 +40,8 @@ inventory = Inventory()
 player = Player('MaleSwordsMan', screen_width, screen_height, inventory)
 drop = Drop()
 enemies = Enemies( 100, 100, player, screen_width, screen_height, drop)
-
+picked_up_item = "" # This is used to display the item picked up by the player
+picked_up_item_time = 0 # This is used to determine how long the message is displayed
 
 # Boolean variable to control the main loop
 running = True
@@ -176,7 +177,12 @@ while running:
                         #drop.useItem(player)
                         player.store_item(drop)
                         items.remove(pygame.Rect(drop.x, drop.y, drop.frameWidth, drop.frameHeight))
+
+                        # Display text for item picked up
+                        picked_up_item = f'{drop.get_item_name()} picked up'
+                        picked_up_item_time = pygame.time.get_ticks()
                         items_group.remove(drop)
+                        
             else:
                 player.attack()
 
@@ -211,6 +217,7 @@ while running:
             player.isRunning = False
             player.jump()
         if keys[pygame.K_1]:
+
             player.use_item(0)
 
         screen.blit(background, (0, 0))
@@ -276,6 +283,11 @@ while running:
     postion_text = font.render(f'Player Position: {player.rect.topleft}', True, (255, 255, 255))
     screen.blit(postion_text, (10, 65))
     inventory.draw_inventory(screen)
+
+    #Display the picked-up item message if the timer is active
+    if picked_up_item and pygame.time.get_ticks() - picked_up_item_time < 2000: #2000 is 2 seconds
+        picked_up_text = font.render(picked_up_item, True, (224, 224, 224))
+        screen.blit(picked_up_text, (player.rect.centerx - 50, player.rect.top - 10))
 
     pygame.display.flip()
 

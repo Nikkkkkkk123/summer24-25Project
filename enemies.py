@@ -57,6 +57,13 @@ class Enemies (pygame.sprite.Sprite):
         self.screenWidth = screenWidth
         self.screenHeight = screenHeight
 
+        # Hitbox for the enemy took from player.py for testing 3/12/2024
+        # Define a smaller hitbox. This is used to check for collisions with the enemy
+        self.hitbox = pygame.Rect(self.x + 25, self.y + 40, self.frameWidth - 75, self.frameHeight - 40)
+
+        # Attack hitbox. This defines the area that the player can hit an enemy in it is used to check for collisions with the enemy
+        self.attack_hitbox = pygame.Rect(self.x + 70, self.y + 70, self.frameWidth - 70, self.frameHeight - 80)
+
         #Damage text 29/11/2024
         self.damage_text = pygame.sprite.Group()
 
@@ -96,14 +103,12 @@ class Enemies (pygame.sprite.Sprite):
             self.targeted_player = False
 
          # Check if Enemy is within the screen boundaries
-        if self.x < 0:
-            self.x = 10
-        if self.x >= self.screenWidth:
+        if self.hitbox.x < 0:
+            self.x = 0
+        if self.x > self.screenWidth:
             self.x = self.screenWidth
         elif self.y < 566:
             self.y = 566
-        elif self.y > self.screenHeight:
-            self.y = self.screenHeight
         
     # Method for when the current enemy is hit
     def hurt (self, damage):

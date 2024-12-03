@@ -310,7 +310,7 @@ class Player (pygame.sprite.Sprite):
     # Date Modified: 2024/12/03
     def store_item(self, item):
         self.inventory.add_item(item)
-
+        
     # Method Name: use_item
     # Method Purpose: This method is used to use an item from the player's inventory
     # Parameters: item - The item that is being used
@@ -324,7 +324,8 @@ class Player (pygame.sprite.Sprite):
                 self.inventory.use_item(item_name)
             # Use the item
             # Remove the item from the inventory
-        
+    
+    
    # Draw the player on the screen
     def draw (self, screen):
         # Check the boolean to see if the attacking animation is meant to be getting used
