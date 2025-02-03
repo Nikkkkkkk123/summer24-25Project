@@ -90,7 +90,7 @@ class Drop(pygame.sprite.Sprite):
     # Date Modified: 2/12/2024
     def draw(self, screen, item, time):
         # If the item has been on screen for longer than the period of time it will despawn.
-        if (time - self.timeCreated) > 3000:
+        if (time - self.timeCreated) > 30000:
             self.kill()
             return
         if item == "heal":

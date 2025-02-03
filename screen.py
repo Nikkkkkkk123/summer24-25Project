@@ -180,7 +180,7 @@ while running:
 
                         # Display text for item picked up
                         picked_up_item = f'{drop.get_item_name()} picked up'
-                        picked_up_item_time = pygame.time.get_ticks()
+                        picked_up_item_time = pygame.time.get_ticks() 
                         items_group.remove(drop)
                         
             else:
@@ -249,6 +249,7 @@ while running:
             for enemy in enemies_group:
                 if player.hitbox.colliderect(enemy.rect) and enemy.can_attack():
                     player.hurt(enemy.damage)
+                    player.hurtSprite()
                     
                     # Set the time the last attack was to the current time
                     enemy.attackDelay = pygame.time.get_ticks()
@@ -288,6 +289,46 @@ while running:
     if picked_up_item and pygame.time.get_ticks() - picked_up_item_time < 2000: #2000 is 2 seconds
         picked_up_text = font.render(picked_up_item, True, (224, 224, 224))
         screen.blit(picked_up_text, (player.rect.centerx - 50, player.rect.top - 10))
+
+    # 29/01/2025 - Check if all enemies are killed, if so spawn more
+    if not enemies_group:
+        for _ in range(5):  # Change the range to the number of enemies you want to spawn
+            new_enemy = Enemies(random.randint(0, screen_width), random.randint(640, screen_height), player, screen_width, screen_height, drop)
+            enemies_group.add(new_enemy)
+            all_entities.add(new_enemy)
+
+    # 29/01/2025 - Check if the player has died
+    if player.health < 0:
+        game_over_text = font.render("Game Over", True, (255, 255, 255))
+        screen.blit(game_over_text, (screen_width // 2 - 50, screen_height // 2 - 50))
+        pygame.display.flip()
+        pygame.time.wait(2000)
+
+        # Ask the player if they want to start a new game
+        new_game_text = font.render("Press Y to start a new game or N to quit", True, (255, 255, 255))
+        screen.blit(new_game_text, (screen_width // 2 - 200, screen_height // 2))
+        pygame.display.flip()
+
+        waiting_for_input = True
+        while waiting_for_input:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_y:
+                        # Reset the game state
+                        player.health = max_health
+                        player.score = 0
+                        enemies_group.empty()
+                        items_group.empty()
+                        all_entities.empty()
+                        all_entities.add(player)
+                        for _ in range(5):
+                            new_enemy = Enemies(random.randint(0, screen_width), random.randint(640, screen_height), player, screen_width, screen_height, drop)
+                            enemies_group.add(new_enemy)
+                            all_entities.add(new_enemy)
+                        waiting_for_input = False
+                    elif event.key == pygame.K_n:
+                        running = False
+                        waiting_for_input = False
 
     pygame.display.flip()
 

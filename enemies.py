@@ -102,13 +102,15 @@ class Enemies (pygame.sprite.Sprite):
         else:
             self.targeted_player = False
 
-         # Check if Enemy is within the screen boundaries
-        if self.hitbox.x < 0:
-            self.x = 0
-        if self.x > self.screenWidth:
-            self.x = self.screenWidth
-        elif self.y < 566:
-            self.y = 566
+        # Check if Enemy is within the screen boundaries
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.right > self.screenWidth:
+            self.rect.right = self.screenWidth
+        if self.rect.top < 0:
+            self.rect.top = 0
+        if self.rect.bottom > self.screenHeight:
+            self.rect.bottom = self.screenHeight
         
     # Method for when the current enemy is hit
     def hurt (self, damage):
